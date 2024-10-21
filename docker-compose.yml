@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  dev-postgres:
+    image: postgres:14.4-alpine
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: Naoto
+      POSTGRES_PASSWORD: Naonao7010
+      POSTGRES_DB: TaskManager
+    restart: always
+    networks:
+      - lesson
+networks:
+  lesson:

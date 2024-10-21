@@ -14,16 +14,34 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Task {
+    id          String    @id @default(cuid())
+    userId      String
+    user        User      @relation(fields: [userId], references: [id])
+    title       String
+    deadLine    DateTime?
+    categoryId  String
+    category    Category  @relation(fields: [categoryId], references: [id])
+    scheduleId  String
+    schedule    Schedule  @relation(fields: [scheduleId], references: [id])
+    memo        String?
+    isCompleted Boolean   @default(value: false)
+}
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+model Category {
+    id     String @id @default(cuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+    title  String @unique
+    tasks  Task[]
+}
 
-    @@index([name])
+model Schedule {
+    id     String @id @default(cuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+    title  String @unique
+    tasks  Task[]
 }
 
 // Necessary for Next auth
@@ -55,14 +73,16 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    tasks         Task[]
+    categories    Category[]
+    schedules     Schedule[]
 }
 
 model VerificationToken {
