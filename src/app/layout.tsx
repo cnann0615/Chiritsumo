@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import Header from "./_components/Header";
 
 export const metadata: Metadata = {
   title: "Task Manager",
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
+        <Header />
         {/* tRPCクライアントを利用可能に */}
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>

@@ -1,17 +1,15 @@
 import Link from "next/link";
 import React from "react";
 
-import { getServerAuthSession } from "~/server/auth";
-const session = await getServerAuthSession();
-
 const SignOut = () => {
   return (
-    <div>
+    <div className="text-center">
+      <h1 className="mb-5 text-9xl font-bold">Task Manager</h1>
       <Link
         href={"/api/auth/signin"}
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+        className="rounded-full bg-white/10 px-10 py-3 text-2xl font-semibold no-underline transition hover:bg-white/20"
       >
-        "Sign in"
+        Sign in for Google！
       </Link>
     </div>
   );

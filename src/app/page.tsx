@@ -1,4 +1,3 @@
-import { HydrateClient } from "~/trpc/server";
 import { getServerAuthSession } from "~/server/auth";
 import SignIn from "./_components/SignIn";
 import SignOut from "./_components/SignOut";
