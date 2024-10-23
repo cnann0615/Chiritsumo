@@ -8,12 +8,12 @@ import { createCaller, type AppRouter } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 import { createQueryClient } from "./query-client";
 
-/**
- * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
- * handling a tRPC call from a React Server Component.
- */
+// tRPCとTanstack Queryを統合して、サーバーサイドでのデータフェッチとクライアントサイドでのハイドレーションを行うための設定///////////////////////////////
+
+// サーバーサイドのtRPCコンテキストを作成し、キャッシュする
 const createContext = cache(() => {
   const heads = new Headers(headers());
+  // `x-trpc-source`ヘッダーを設定して、リクエストがRSCから来ていることを明示
   heads.set("x-trpc-source", "rsc");
 
   return createTRPCContext({
@@ -21,10 +21,14 @@ const createContext = cache(() => {
   });
 });
 
+// Tanstack Queryのクエリクライアントを生成し、キャッシュする
 const getQueryClient = cache(createQueryClient);
+
+// tRPCの呼び出し関数を作成
 const caller = createCaller(createContext);
 
+// tRPCとTanstack Queryを統合するヘルパー関数
 export const { trpc: api, HydrateClient } = createHydrationHelpers<AppRouter>(
   caller,
-  getQueryClient
+  getQueryClient,
 );

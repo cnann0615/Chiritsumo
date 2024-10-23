@@ -17,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
+        {/* tRPCクライアントを利用可能に */}
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
