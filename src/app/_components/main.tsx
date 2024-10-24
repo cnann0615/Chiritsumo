@@ -1,14 +1,14 @@
-import Link from "next/link";
-import React from "react";
-import { getServerAuthSession } from "~/server/auth";
+import WrapSessionProvider from "./WrapSessionProvider";
+import NewContents from "./NewContents";
 
 const Main = async () => {
-  const session = await getServerAuthSession();
-
   return (
-    <div>
-      <div>{session!.user.name}のメインページ</div>
-    </div>
+    <>
+      <div>メイン</div>
+      <WrapSessionProvider>
+        <NewContents />
+      </WrapSessionProvider>
+    </>
   );
 };
 

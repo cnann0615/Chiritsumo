@@ -6,7 +6,7 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
-  // 画像の外部ドメインを許可する設定
+  // 画像の外部ドメインを許可する設定(Googleのプロフィール画像)
   images: {
     domains: ["lh3.googleusercontent.com"], // Googleのプロフィール画像ホストを許可
   },

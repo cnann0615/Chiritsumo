@@ -9,15 +9,15 @@ const Header = async () => {
   const session = await getServerAuthSession();
 
   return (
-    <header className="bg-gray-800 p-4 text-white">
+    <header className="h-16 bg-gray-800 p-4 text-white">
       <nav className="container mx-auto flex items-center justify-between">
-        {/* 左端のタイトル */}
+        {/* タイトル */}
         <div className="flex gap-3">
           <MdOutlineTaskAlt size={35} data-testid="icon" />
           <div className="text-3xl font-bold">Task Manager</div>
         </div>
 
-        {/* 右端のログイン情報 */}
+        {/* ログイン情報 */}
         {session && (
           <div className="flex items-center space-x-4">
             {/* ログインアイコン */}
