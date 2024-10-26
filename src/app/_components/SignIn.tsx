@@ -6,6 +6,7 @@ const SignIn = async () => {
   const session = await getServerAuthSession();
   return (
     <div className="min-h-[calc(100vh-64px)]">
+      <p>サーバーでセッション取得：{session?.user.name}</p>
       <Main />
     </div>
   );

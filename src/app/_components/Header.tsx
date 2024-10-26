@@ -3,7 +3,7 @@ import React from "react";
 import { IoIosLogOut } from "react-icons/io";
 import Image from "next/image";
 import { getServerAuthSession } from "~/server/auth";
-import { MdOutlineTaskAlt } from "react-icons/md";
+import { TbMountain } from "react-icons/tb";
 
 const Header = async () => {
   const session = await getServerAuthSession();
@@ -13,8 +13,8 @@ const Header = async () => {
       <nav className="container mx-auto flex items-center justify-between">
         {/* タイトル */}
         <div className="flex gap-3">
-          <MdOutlineTaskAlt size={35} data-testid="icon" />
-          <div className="text-3xl font-bold">Task Manager</div>
+          <TbMountain size={35} data-testid="icon" />
+          <div className="text-3xl font-bold">ちりつも</div>
         </div>
 
         {/* ログイン情報 */}

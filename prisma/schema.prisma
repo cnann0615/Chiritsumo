@@ -14,34 +14,38 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Task {
-    id          String    @id @default(cuid())
-    userId      String
-    user        User      @relation(fields: [userId], references: [id])
-    title       String
-    deadLine    DateTime?
-    categoryId  String
-    category    Category  @relation(fields: [categoryId], references: [id])
-    scheduleId  String
-    schedule    Schedule  @relation(fields: [scheduleId], references: [id])
-    memo        String?
-    isCompleted Boolean   @default(value: false)
+model TsumoBalance {
+    id           String @id @default(cuid())
+    userId       String
+    user         User   @relation(fields: [userId], references: [id])
+    tsumoBalance Int
 }
 
-model Category {
+model TsumoLog {
+    id              String         @id @default(cuid())
+    userId          String
+    user            User           @relation(fields: [userId], references: [id])
+    title           String
+    tsumo           Int
+    habitualWasteId String?
+    habitualWaste   HabitualWaste? @relation(fields: [habitualWasteId], references: [id])
+}
+
+model HabitualWaste {
+    id        String     @id @default(cuid())
+    userId    String
+    user      User       @relation(fields: [userId], references: [id])
+    title     String     @unique
+    tsumo     Int
+    tsumoLogs TsumoLog[]
+}
+
+model wantedItem {
     id     String @id @default(cuid())
     userId String
     user   User   @relation(fields: [userId], references: [id])
-    title  String @unique
-    tasks  Task[]
-}
-
-model Schedule {
-    id     String @id @default(cuid())
-    userId String
-    user   User   @relation(fields: [userId], references: [id])
-    title  String @unique
-    tasks  Task[]
+    name   String
+    price  Int
 }
 
 // Necessary for Next auth
@@ -73,16 +77,17 @@ model Session {
 }
 
 model User {
-    id            String     @id @default(cuid())
-    name          String?
-    email         String?    @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    tasks         Task[]
-    categories    Category[]
-    schedules     Schedule[]
+    id             String          @id @default(cuid())
+    name           String?
+    email          String?         @unique
+    emailVerified  DateTime?
+    image          String?
+    accounts       Account[]
+    sessions       Session[]
+    tsumoBalances  TsumoBalance[]
+    tsumoLogs      TsumoLog[]
+    habitualWastes HabitualWaste[]
+    wantedItems    wantedItem[]
 }
 
 model VerificationToken {

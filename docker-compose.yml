@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: Naoto
       POSTGRES_PASSWORD: Naonao7010
-      POSTGRES_DB: TaskManager
+      POSTGRES_DB: Chiritsumo
     restart: always
     networks:
       - lesson
