@@ -31,11 +31,6 @@ declare module "next-auth" {
   // }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, user }) => ({
@@ -45,6 +40,29 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+    // サインインしたときに、Tsumo Balanceテーブルに新しいレコードを作成する
+    signIn: async ({ user }) => {
+      try {
+        // 既存レコードを確認
+        const existingRecord = await db.tsumoBalance.findUnique({
+          where: { userId: user.id },
+        });
+
+        // 既存レコードがなければ新規レコードを作成
+        if (!existingRecord) {
+          await db.tsumoBalance.create({
+            data: {
+              userId: user.id,
+              tsumoBalance: 0,
+            },
+          });
+        }
+        return true;
+      } catch (error) {
+        console.error("Error checking or creating record on signIn:", error);
+        return false;
+      }
+    },
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
@@ -52,21 +70,7 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
 };
 
-/**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
 export const getServerAuthSession = () => getServerSession(authOptions);

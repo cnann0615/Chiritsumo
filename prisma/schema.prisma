@@ -16,28 +16,25 @@ datasource db {
 
 model TsumoBalance {
     id           String @id @default(cuid())
-    userId       String
+    userId       String @unique
     user         User   @relation(fields: [userId], references: [id])
-    tsumoBalance Int
+    tsumoBalance Int    @default(0)
 }
 
 model TsumoLog {
-    id              String         @id @default(cuid())
-    userId          String
-    user            User           @relation(fields: [userId], references: [id])
-    title           String
-    tsumo           Int
-    habitualWasteId String?
-    habitualWaste   HabitualWaste? @relation(fields: [habitualWasteId], references: [id])
+    id     String @id @default(cuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+    title  String
+    tsumo  Int
 }
 
 model HabitualWaste {
-    id        String     @id @default(cuid())
-    userId    String
-    user      User       @relation(fields: [userId], references: [id])
-    title     String     @unique
-    tsumo     Int
-    tsumoLogs TsumoLog[]
+    id     String @id @default(cuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+    title  String @unique
+    tsumo  Int
 }
 
 model wantedItem {

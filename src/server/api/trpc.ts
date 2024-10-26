@@ -33,7 +33,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
   },
 });
 
-// サーバーサイドの呼び出し下を作成する関数
+// サーバーサイドの呼び出し元を作成する関数
 export const createCallerFactory = t.createCallerFactory;
 
 // tRPC APIで新しいルーターとサブルーターを作成する関数

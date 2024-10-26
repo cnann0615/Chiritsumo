@@ -7,7 +7,11 @@ type WrapSessionProvider = {
 };
 
 const WrapSessionProvider = ({ children }: WrapSessionProvider) => {
-  return <SessionProvider>{children}</SessionProvider>;
+  return (
+    <div className="bg-gray-700">
+      <SessionProvider>{children}</SessionProvider>
+    </div>
+  );
 };
 
 export default WrapSessionProvider;
