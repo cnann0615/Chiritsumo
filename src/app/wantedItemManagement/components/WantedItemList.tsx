@@ -1,6 +1,5 @@
 "use client";
 import { WantedItem } from "@prisma/client";
-import { OgObject } from "open-graph-scraper/types";
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
 
@@ -64,16 +63,18 @@ const WantedItemList = () => {
   };
 
   return (
-    <div>
-      <h2 className="mb-4 text-2xl font-bold">欲しい物リスト</h2>
+    <div className="px-4">
+      <h2 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">
+        欲しい物リスト
+      </h2>
       {wantedItemList?.map((item) => (
         <article
           key={item.id}
-          className="mb-4 flex items-start justify-between space-x-4 rounded border border-gray-500 bg-gray-900 p-4 shadow-xl"
+          className="mb-4 flex flex-col items-start gap-4 rounded border border-gray-500 bg-gray-900 p-4 shadow-xl sm:flex-row sm:items-center sm:justify-between"
         >
-          <div className="flex-1">
+          <div className="w-full flex-1">
             {editId === item.id ? (
-              <div>
+              <div className="flex flex-col gap-2">
                 <input
                   type="text"
                   value={editData.name}
@@ -83,7 +84,8 @@ const WantedItemList = () => {
                       name: e.target.value,
                     }))
                   }
-                  className="mb-2 w-full rounded border bg-black bg-opacity-10 px-2 py-1"
+                  className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                  placeholder="商品名"
                 />
                 <input
                   type="number"
@@ -94,7 +96,8 @@ const WantedItemList = () => {
                       price: e.target.value,
                     }))
                   }
-                  className="mb-2 w-full rounded border bg-black bg-opacity-10 px-2 py-1"
+                  className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                  placeholder="価格"
                 />
                 <input
                   type="url"
@@ -105,14 +108,19 @@ const WantedItemList = () => {
                       url: e.target.value,
                     }))
                   }
-                  className="mb-2 w-full rounded border bg-black bg-opacity-10 px-2 py-1"
+                  className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                  placeholder="URL"
                 />
               </div>
             ) : (
               <div>
                 <div className="flex items-end gap-3">
-                  <h3 className="text-lg font-semibold">{item.name}</h3>
-                  <p className="text-gray-500">Price: ¥{item.price}</p>
+                  <h3 className="text-lg font-semibold text-gray-100">
+                    {item.name}
+                  </h3>
+                  <p className="text-sm text-gray-300 sm:text-base">
+                    Price: ¥{item.price}
+                  </p>
                 </div>
                 <a
                   href={item.url}
@@ -125,18 +133,18 @@ const WantedItemList = () => {
               </div>
             )}
           </div>
-          <div className="flex flex-shrink-0 gap-2">
+          <div className="flex gap-2">
             {editId === item.id ? (
               <>
                 <button
                   onClick={() => handleSave(item.id)}
-                  className="rounded bg-green-500 px-4 py-2 text-white"
+                  className="w-full rounded bg-green-500 px-4 py-2 text-white sm:w-auto"
                 >
                   Save
                 </button>
                 <button
-                  onClick={() => setEditId(null)}
-                  className="rounded bg-gray-400 px-4 py-2 text-white"
+                  onClick={handleCancel}
+                  className="w-full rounded bg-gray-400 px-4 py-2 text-white sm:w-auto"
                 >
                   Cancel
                 </button>
@@ -145,13 +153,13 @@ const WantedItemList = () => {
               <>
                 <button
                   onClick={() => handleEdit(item)}
-                  className="rounded bg-blue-600 px-4 py-2 text-white"
+                  className="w-full rounded bg-pink-500 px-4 py-2 text-white sm:w-auto"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(item.id)}
-                  className="rounded bg-red-500 px-4 py-2 text-white"
+                  className="w-full rounded bg-gray-700 px-4 py-2 text-white sm:w-auto"
                 >
                   Delete
                 </button>

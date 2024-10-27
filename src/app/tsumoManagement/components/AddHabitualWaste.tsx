@@ -13,13 +13,13 @@ type FormData = {
 
 const AddHabitualWaste = () => {
   const utils = api.useUtils();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   // ミューテーションを定義
   const createHabitualWaste = api.habitualWaste.create.useMutation({
     onSuccess: async () => {
       await utils.habitualWaste.read.invalidate();
-      reset(); // 成功後にフォームをリセット
+      reset();
     },
   });
 
@@ -41,39 +41,41 @@ const AddHabitualWaste = () => {
   };
 
   return (
-    <div>
+    <div className="px-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center space-x-4"
+        className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center"
       >
-        <div className="flex flex-col">
+        <div className="flex-1">
           <input
             type="text"
             {...register("title", { required: "タイトルは必須です" })}
-            className="rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
             placeholder="無駄遣いの内容を入力"
           />
+          {errors.title && (
+            <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
+          )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex-1">
           <input
             type="number"
-            {...register("tsumo", { required: "値段は必須です" })}
-            className="rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            {...register("tsumo", {
+              required: "値段は必須です",
+              validate: (value) =>
+                value > 0 || "値段は正の数である必要があります",
+            })}
+            className="w-full rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
             placeholder="無駄遣いの金額を入力"
           />
+          {errors.tsumo && (
+            <p className="mt-1 text-sm text-red-500">{errors.tsumo.message}</p>
+          )}
         </div>
-        <div className="w-24">
+        <div className="sm:w-auto">
           <Button text="追加" pending={createHabitualWaste.isPending} />
         </div>
       </form>
-      <div className="flex gap-3">
-        {errors.title && (
-          <p className="mt-2 text-sm text-red-500">{errors.title.message}</p>
-        )}
-        {errors.tsumo && (
-          <p className="mt-2 text-sm text-red-500">{errors.tsumo.message}</p>
-        )}
-      </div>
     </div>
   );
 };

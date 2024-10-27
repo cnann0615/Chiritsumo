@@ -17,13 +17,13 @@ const HabitualWastedList = () => {
   // ミューテーションを定義
   const updateHabitualWaste = api.habitualWaste.update.useMutation({
     onSuccess: async () => {
-      await refetch(); // 更新成功後にデータを再取得
-      setEditId(null); // 編集モードを解除
+      await refetch();
+      setEditId(null);
     },
   });
   const deleteHabitualWaste = api.habitualWaste.delete.useMutation({
     onSuccess: async () => {
-      await refetch(); // 削除成功後にデータを再取得
+      await refetch();
     },
   });
 
@@ -54,10 +54,10 @@ const HabitualWastedList = () => {
   };
 
   return (
-    <div>
-      <table className="w-full border-collapse">
+    <div className="overflow-x-auto px-4">
+      <table className="w-full border-collapse text-left text-sm sm:text-base">
         <thead>
-          <tr className="bg-black bg-opacity-10 text-left">
+          <tr className="bg-black bg-opacity-30">
             <th className="p-3 font-semibold text-gray-200">タイトル</th>
             <th className="p-3 font-semibold text-gray-200">値段</th>
             <th className="p-3 font-semibold text-gray-200">アクション</th>
@@ -80,10 +80,11 @@ const HabitualWastedList = () => {
                         title: e.target.value,
                       }))
                     }
-                    className="rounded border bg-black bg-opacity-10 p-2 text-gray-100"
+                    className="w-full rounded border bg-black bg-opacity-10 p-2 text-gray-100"
+                    placeholder="タイトル"
                   />
                 ) : (
-                  waste.title
+                  <span className="block sm:table-cell">{waste.title}</span>
                 )}
               </td>
               <td className="p-3">
@@ -97,44 +98,47 @@ const HabitualWastedList = () => {
                         tsumo: e.target.value,
                       }))
                     }
-                    className="rounded border bg-black bg-opacity-10 p-2 text-gray-100"
+                    className="w-full rounded border bg-black bg-opacity-10 p-2 text-gray-100"
+                    placeholder="値段"
                   />
                 ) : (
-                  waste.tsumo
+                  <span className="block sm:table-cell">{waste.tsumo}</span>
                 )}
               </td>
-              <td className="space-x-2 p-3">
-                {editId === waste.id ? (
-                  <>
-                    <button
-                      onClick={() => handleSave(waste.id)}
-                      className="rounded bg-green-600 px-2 py-1 text-white"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={handleCancel}
-                      className="rounded bg-gray-600 px-2 py-1 text-white"
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => handleEdit(waste)}
-                      className="rounded bg-blue-600 px-2 py-1 text-white"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(waste.id)}
-                      className="rounded bg-red-600 px-2 py-1 text-white"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
+              <td className="p-3">
+                <div className="flex flex-wrap gap-2">
+                  {editId === waste.id ? (
+                    <>
+                      <button
+                        onClick={() => handleSave(waste.id)}
+                        className="w-full rounded bg-green-600 px-2 py-1 text-white sm:w-auto"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={handleCancel}
+                        className="w-full rounded bg-gray-600 px-2 py-1 text-white sm:w-auto"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleEdit(waste)}
+                        className="w-full rounded bg-pink-500 px-2 py-1 text-white sm:w-auto"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(waste.id)}
+                        className="w-full rounded bg-gray-700 px-2 py-1 text-white sm:w-auto"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </div>
               </td>
             </tr>
           ))}

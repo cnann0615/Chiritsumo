@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
 import { HabitualWaste, TsumoLog } from "@prisma/client";
@@ -13,10 +13,9 @@ type FormData = {
 
 const AddTsumo = () => {
   const utils = api.useUtils();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const { data: habitualWasteList } = api.habitualWaste.read.useQuery();
 
-  // ミューテーションを定義
   const updateTsumoBalance = api.tsumoBalance.update.useMutation({
     onSuccess: async () => {
       await utils.tsumoBalance.read.invalidate();
@@ -25,7 +24,6 @@ const AddTsumo = () => {
   });
   const createTsumoLog = api.tsumoLog.create.useMutation();
 
-  // フォーム関連
   const {
     register,
     handleSubmit,
@@ -44,7 +42,6 @@ const AddTsumo = () => {
     updateTsumoBalance.mutate({ tsumo: Number(data.tsumo) });
   };
 
-  // セレクト変更時にタイトルと値段を自動入力
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedWaste = habitualWasteList?.find(
       (waste) => waste.id === event.target.value,
@@ -59,18 +56,20 @@ const AddTsumo = () => {
   };
 
   return (
-    <div className="flex justify-center p-6 text-gray-300">
-      <div>
-        <h2 className="mb-6 flex justify-center text-2xl font-bold text-gray-100">
-          無駄遣いを我慢できたら記録しよう！
+    <div className="flex justify-center p-4 text-gray-300 sm:p-6">
+      <div className="w-full max-w-lg">
+        <h2 className="mb-6 text-center text-xl font-bold text-gray-100 sm:text-2xl">
+          無駄遣いを我慢して残高を<span className="text-pink-500">つも</span>
+          らせよう！
         </h2>
+
         {/* セレクトボックス */}
         <div className="mb-4 flex justify-center">
           <select
             onChange={handleSelectChange}
-            className="w-[80%] rounded-md border bg-transparent p-3 text-center text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className="w-full max-w-md rounded-md border bg-transparent p-3 text-center text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 sm:w-[80%]"
           >
-            <option value="">無駄リストから選択</option>
+            <option value="">無駄づかいリストから選択</option>
             {habitualWasteList?.map((waste) => (
               <option key={waste.id} value={waste.id}>
                 {waste.title} / ¥{waste.tsumo}
@@ -80,20 +79,20 @@ const AddTsumo = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <div className="md: flex md:items-center md:gap-4">
-            <div className="flex flex-col">
+          <div className="md:flex md:items-center md:gap-4">
+            <div className="mb-2 flex flex-col md:mb-0 md:w-1/2">
               <input
                 type="text"
                 {...register("title", { required: "タイトルは必須です" })}
-                className="rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 placeholder="タイトルを入力"
               />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col md:w-1/2">
               <input
                 type="number"
                 {...register("tsumo", { required: "値段は必須です" })}
-                className="rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 placeholder="値段を入力"
               />
             </div>
@@ -103,11 +102,10 @@ const AddTsumo = () => {
             text="我慢できた！！！"
             pending={updateTsumoBalance.isPending}
           />
-          <div className="flex justify-center">
+
+          <div className="flex justify-center space-x-2">
             {errors.title && (
-              <p className="mr-2 text-sm text-red-500">
-                {errors.title.message}
-              </p>
+              <p className="text-sm text-red-500">{errors.title.message}</p>
             )}
             {errors.tsumo && (
               <p className="text-sm text-red-500">{errors.tsumo.message}</p>

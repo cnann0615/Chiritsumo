@@ -15,7 +15,7 @@ const page = async () => {
         <div className="min-h-[calc(100vh-64px)]">
           <HydrateClient>
             <WrapSessionProvider>
-              <div className="space-y-10">
+              <div className="p- space-y-10 p-4">
                 <HabitualWasteManagement />
                 <TsumoLogList />
               </div>
