@@ -37,6 +37,7 @@ const TsumoLogList = () => {
       await refetch();
     },
   });
+
   const deleteTsumoLog = api.tsumoLog.delete.useMutation({
     onSuccess: async (tsumo) => {
       updateTsumoBalance.mutate({ tsumo: -tsumo.tsumo });
