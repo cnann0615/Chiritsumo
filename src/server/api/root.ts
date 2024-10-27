@@ -3,6 +3,7 @@ import { tsumoBalanceRouter } from "~/server/api/routers/tsumoBalance";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { tsumoLogRouter } from "./routers/tsumoLog";
 import { habitualWasteRouter } from "./routers/habitualWaste";
+import { wantedItemRouter } from "./routers/wantedItem";
 
 // routerを１つにまとめるroot router//////////////////////////////////////////////
 
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   tsumoBalance: tsumoBalanceRouter,
   tsumoLog: tsumoLogRouter,
   habitualWaste: habitualWasteRouter,
+  wantedItem: wantedItemRouter,
 });
 
 // APIの型定義をエクスポート：クライアント側での型安全性を確保

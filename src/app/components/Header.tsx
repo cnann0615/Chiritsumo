@@ -31,6 +31,11 @@ const Header = async () => {
                 つも管理
               </Link>
             </li>
+            <li>
+              <Link href="/wantedItemManagement" className="hover:underline">
+                欲しい物リスト
+              </Link>
+            </li>
           </ul>
         </div>
 

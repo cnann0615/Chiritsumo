@@ -80,7 +80,7 @@ const HabitualWastedList = () => {
                         title: e.target.value,
                       }))
                     }
-                    className="rounded bg-gray-700 p-2 text-gray-100"
+                    className="rounded border bg-black bg-opacity-10 p-2 text-gray-100"
                   />
                 ) : (
                   waste.title
@@ -97,7 +97,7 @@ const HabitualWastedList = () => {
                         tsumo: e.target.value,
                       }))
                     }
-                    className="rounded bg-gray-700 p-2 text-gray-100"
+                    className="rounded border bg-black bg-opacity-10 p-2 text-gray-100"
                   />
                 ) : (
                   waste.tsumo

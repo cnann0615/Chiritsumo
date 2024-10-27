@@ -1,24 +1,26 @@
 "use client";
-import { HabitualWaste } from "@prisma/client";
+
+import { WantedItem } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React from "react";
 import { useForm } from "react-hook-form";
+import Button from "~/app/components/Button";
 import { api } from "~/trpc/react";
-import Button from "../../components/Button";
 
 type FormData = {
-  title: string;
-  tsumo: number;
+  name: string;
+  price: number;
+  url: string;
 };
 
-const AddHabitualWaste = () => {
+const AddWantedItem = () => {
   const utils = api.useUtils();
   const { data: session, status } = useSession();
 
   // ミューテーションを定義
-  const createHabitualWaste = api.habitualWaste.create.useMutation({
+  const createWantedItem = api.wantedItem.create.useMutation({
     onSuccess: async () => {
-      await utils.habitualWaste.read.invalidate();
+      await utils.wantedItem.read.invalidate();
       reset(); // 成功後にフォームをリセット
     },
   });
@@ -32,50 +34,52 @@ const AddHabitualWaste = () => {
   } = useForm<FormData>();
 
   const onSubmit = (data: FormData) => {
-    const newTsumo: Omit<HabitualWaste, "id" | "createdAt"> = {
-      title: data.title,
-      tsumo: Number(data.tsumo),
+    const newWantedItem: Omit<WantedItem, "id" | "createdAt"> = {
+      name: data.name,
+      price: Number(data.price),
       userId: session!.user.id,
+      url: data.url,
     };
-    createHabitualWaste.mutate(newTsumo);
+    createWantedItem.mutate(newWantedItem);
   };
 
   return (
     <div>
+      <h2 className="mb-4 text-2xl font-bold">欲しい物</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center space-x-4"
+        className="mb-8 flex items-center gap-4"
       >
-        <div className="flex flex-col">
+        <div>
           <input
             type="text"
-            {...register("title", { required: "タイトルは必須です" })}
+            {...register("name", { required: true })}
+            placeholder="商品名"
             className="rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            placeholder="無駄遣いの内容を入力"
           />
         </div>
-        <div className="flex flex-col">
+        <div>
           <input
             type="number"
-            {...register("tsumo", { required: "値段は必須です" })}
+            {...register("price", { required: true })}
+            placeholder="価格"
             className="rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            placeholder="無駄遣いの金額を入力"
+          />
+        </div>
+        <div>
+          <input
+            type="url"
+            {...register("url", { required: true })}
+            placeholder="https://example.com"
+            className="rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="w-24">
-          <Button text="追加" pending={createHabitualWaste.isPending} />
+          <Button text="追加" pending={createWantedItem.isPending} />
         </div>
       </form>
-      <div className="flex gap-3">
-        {errors.title && (
-          <p className="mt-2 text-sm text-red-500">{errors.title.message}</p>
-        )}
-        {errors.tsumo && (
-          <p className="mt-2 text-sm text-red-500">{errors.tsumo.message}</p>
-        )}
-      </div>
     </div>
   );
 };
 
-export default AddHabitualWaste;
+export default AddWantedItem;

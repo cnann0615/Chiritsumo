@@ -3,6 +3,8 @@ import { api, HydrateClient } from "~/trpc/server";
 import AddTsumo from "./AddTsumo";
 import TsumoBalanceDisplay from "./TsumoBalanceDisplay";
 import { getServerAuthSession } from "~/server/auth";
+import WantedItemList from "../wantedItemManagement/components/WantedItemList";
+import TsumoBalanceProgress from "./TsumoBalanceProgress";
 
 const Main = async () => {
   const session = await getServerAuthSession();
@@ -13,6 +15,7 @@ const Main = async () => {
         <WrapSessionProvider>
           <TsumoBalanceDisplay />
           <AddTsumo />
+          <TsumoBalanceProgress />
         </WrapSessionProvider>
       </HydrateClient>
     </div>

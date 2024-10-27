@@ -40,11 +40,13 @@ model HabitualWaste {
 }
 
 model WantedItem {
-    id     String @id @default(cuid())
-    userId String
-    user   User   @relation(fields: [userId], references: [id])
-    name   String
-    price  Int
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    name      String
+    price     Int
+    url       String
+    createdAt DateTime @default(now())
 }
 
 // Necessary for Next auth

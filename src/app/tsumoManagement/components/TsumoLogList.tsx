@@ -109,7 +109,7 @@ const TsumoLogList = () => {
                         title: e.target.value,
                       }))
                     }
-                    className="rounded bg-gray-700 p-1 text-gray-100"
+                    className="rounded border bg-black bg-opacity-10 p-1 text-gray-100"
                   />
                 ) : (
                   tsumo.title
@@ -126,7 +126,7 @@ const TsumoLogList = () => {
                         tsumo: e.target.value,
                       }))
                     }
-                    className="rounded bg-gray-700 p-1 text-gray-100"
+                    className="rounded border bg-black bg-opacity-10 p-1 text-gray-100"
                   />
                 ) : (
                   tsumo.tsumo

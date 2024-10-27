@@ -23,7 +23,7 @@ const AddTsumo = () => {
       reset();
     },
   });
-  const addTsumoLog = api.tsumoLog.create.useMutation();
+  const createTsumoLog = api.tsumoLog.create.useMutation();
 
   // フォーム関連
   const {
@@ -40,7 +40,7 @@ const AddTsumo = () => {
       tsumo: Number(data.tsumo),
       userId: session!.user.id,
     };
-    addTsumoLog.mutate(newTsumo);
+    createTsumoLog.mutate(newTsumo);
     updateTsumoBalance.mutate({ tsumo: Number(data.tsumo) });
   };
 
@@ -62,7 +62,7 @@ const AddTsumo = () => {
     <div className="flex justify-center p-6 text-gray-300">
       <div>
         <h2 className="mb-6 flex justify-center text-2xl font-bold text-gray-100">
-          無駄遣いの我慢を記録しよう！
+          無駄遣いを我慢できたら記録しよう！
         </h2>
         {/* セレクトボックス */}
         <div className="mb-4 flex justify-center">
