@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import Header from "./_components/Header";
+import Header from "./components/Header";
 
 export const metadata: Metadata = {
   title: "Chiritsumo",
@@ -17,10 +17,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <body>
+      <body className="space-y-4 bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         <Header />
-        {/* tRPCクライアントを利用可能に */}
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <div className="px-[5%] py-[2%]">
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </div>
       </body>
     </html>
   );

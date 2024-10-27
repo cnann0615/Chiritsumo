@@ -10,21 +10,47 @@ import { db } from "~/server/db";
 
 // Procedureの定義//////////////////////////////////////////////
 
-export const tsumoBalanceRouter = createTRPCRouter({
-  // つも残高の取得
+export const tsumoLogRouter = createTRPCRouter({
+  // つもログの取得
   read: protectedProcedure.query(({ ctx }) => {
-    return db.tsumoBalance.findUnique({
+    return db.tsumoLog.findMany({
       where: { userId: ctx.session.user.id },
+      orderBy: { createdAt: "desc" },
     });
   }),
 
-  // つも残高の更新
-  update: protectedProcedure
-    .input(z.object({ tsumo: z.number() }))
+  // つもログの追加
+  create: protectedProcedure
+    .input(z.object({ tsumo: z.number(), title: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return db.tsumoBalance.update({
-        where: { userId: ctx.session.user.id },
-        data: { tsumoBalance: { increment: input.tsumo } },
+      return db.tsumoLog.create({
+        data: {
+          userId: ctx.session.user.id,
+          tsumo: input.tsumo,
+          title: input.title,
+        },
+      });
+    }),
+
+  // つもログの更新
+  update: protectedProcedure
+    .input(z.object({ id: z.string(), tsumo: z.number(), title: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return db.tsumoLog.update({
+        where: { id: input.id },
+        data: {
+          tsumo: input.tsumo,
+          title: input.title,
+        },
+      });
+    }),
+
+  // つもログの削除
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return db.tsumoLog.delete({
+        where: { id: input.id },
       });
     }),
 

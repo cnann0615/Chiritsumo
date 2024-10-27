@@ -10,21 +10,47 @@ import { db } from "~/server/db";
 
 // Procedureの定義//////////////////////////////////////////////
 
-export const tsumoBalanceRouter = createTRPCRouter({
-  // つも残高の取得
+export const habitualWasteRouter = createTRPCRouter({
+  // 習慣的な無駄遣いを取得
   read: protectedProcedure.query(({ ctx }) => {
-    return db.tsumoBalance.findUnique({
+    return db.habitualWaste.findMany({
       where: { userId: ctx.session.user.id },
+      orderBy: { createdAt: "desc" },
     });
   }),
 
-  // つも残高の更新
-  update: protectedProcedure
-    .input(z.object({ tsumo: z.number() }))
+  // 習慣的な無駄遣いを追加
+  create: protectedProcedure
+    .input(z.object({ tsumo: z.number(), title: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return db.tsumoBalance.update({
-        where: { userId: ctx.session.user.id },
-        data: { tsumoBalance: { increment: input.tsumo } },
+      return db.habitualWaste.create({
+        data: {
+          userId: ctx.session.user.id,
+          tsumo: input.tsumo,
+          title: input.title,
+        },
+      });
+    }),
+
+  // 習慣的な無駄遣いの更新
+  update: protectedProcedure
+    .input(z.object({ id: z.string(), tsumo: z.number(), title: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return db.habitualWaste.update({
+        where: { id: input.id },
+        data: {
+          tsumo: input.tsumo,
+          title: input.title,
+        },
+      });
+    }),
+
+  // 習慣的な無駄遣いの削除
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return db.habitualWaste.delete({
+        where: { id: input.id },
       });
     }),
 

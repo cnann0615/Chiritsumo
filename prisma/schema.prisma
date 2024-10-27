@@ -22,22 +22,24 @@ model TsumoBalance {
 }
 
 model TsumoLog {
-    id     String @id @default(cuid())
-    userId String
-    user   User   @relation(fields: [userId], references: [id])
-    title  String
-    tsumo  Int
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    title     String
+    tsumo     Int
+    createdAt DateTime @default(now())
 }
 
 model HabitualWaste {
-    id     String @id @default(cuid())
-    userId String
-    user   User   @relation(fields: [userId], references: [id])
-    title  String @unique
-    tsumo  Int
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    title     String   @unique
+    tsumo     Int
+    createdAt DateTime @default(now())
 }
 
-model wantedItem {
+model WantedItem {
     id     String @id @default(cuid())
     userId String
     user   User   @relation(fields: [userId], references: [id])
@@ -84,7 +86,7 @@ model User {
     tsumoBalances  TsumoBalance[]
     tsumoLogs      TsumoLog[]
     habitualWastes HabitualWaste[]
-    wantedItems    wantedItem[]
+    wantedItems    WantedItem[]
 }
 
 model VerificationToken {

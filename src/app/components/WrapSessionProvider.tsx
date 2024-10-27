@@ -8,7 +8,7 @@ type WrapSessionProvider = {
 
 const WrapSessionProvider = ({ children }: WrapSessionProvider) => {
   return (
-    <div className="bg-gray-700">
+    <div>
       <SessionProvider>{children}</SessionProvider>
     </div>
   );
