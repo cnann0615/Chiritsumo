@@ -11,7 +11,6 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked",
   ],
   rules: {
-    // ESLintのルールを無効化
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-unnecessary-type-assertion": "off",
     "@typescript-eslint/consistent-type-imports": "off",
@@ -19,6 +18,7 @@ const config = {
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-unused-expressions": "off",
   },
 };
 module.exports = config;
