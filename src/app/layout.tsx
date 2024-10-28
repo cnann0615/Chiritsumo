@@ -14,10 +14,10 @@ export const metadata: Metadata = {
 
 interface LayoutProps {
   children: React.ReactNode;
-  types?: string;
+  types: string;
 }
 
-export default function RootLayout({ children }: LayoutProps) {
+export default function RootLayout({ children, types }: LayoutProps) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body className="bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
