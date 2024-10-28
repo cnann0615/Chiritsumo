@@ -59,8 +59,11 @@ const AddTsumo = () => {
     <div className="flex justify-center p-4 text-gray-300 sm:p-6">
       <div className="w-full max-w-lg">
         <h2 className="mb-6 text-center text-xl font-bold text-gray-100 sm:text-2xl">
-          無駄遣いを我慢して残高を<span className="text-pink-500">つも</span>
-          らせよう！
+          <div className="inline-block">無駄づかいを我慢して</div>
+          <div className="inline-block">
+            残高を<span className="text-pink-500">つも</span>
+            らせよう！
+          </div>
         </h2>
 
         {/* セレクトボックス */}

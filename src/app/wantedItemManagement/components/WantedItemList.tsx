@@ -171,7 +171,8 @@ const WantedItemList = () => {
         ))
       ) : (
         <p className="text-center text-gray-500">
-          欲しい物リストが空です。新しいアイテムを追加してください。
+          <div className="inline-block">欲しい物リストが空です。</div>
+          <div className="inline-block">新しいアイテムを追加してください。</div>
         </p>
       )}
     </div>

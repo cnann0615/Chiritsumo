@@ -96,7 +96,7 @@ const AddWantedItem = () => {
           )}
         </div>
         <div className="sm:w-auto">
-          <Button text="追加" pending={createWantedItem.isPending} />
+          <Button text="Add" pending={createWantedItem.isPending} />
         </div>
       </form>
     </div>

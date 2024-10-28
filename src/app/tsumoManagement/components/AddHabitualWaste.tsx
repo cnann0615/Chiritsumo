@@ -42,6 +42,7 @@ const AddHabitualWaste = () => {
 
   return (
     <div className="px-4">
+      <h2 className="text-2xl font-bold text-gray-100">無駄づかいリスト</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center"
@@ -73,7 +74,7 @@ const AddHabitualWaste = () => {
           )}
         </div>
         <div className="sm:w-auto">
-          <Button text="追加" pending={createHabitualWaste.isPending} />
+          <Button text="Add" pending={createHabitualWaste.isPending} />
         </div>
       </form>
     </div>
