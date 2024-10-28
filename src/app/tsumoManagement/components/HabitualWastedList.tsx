@@ -54,7 +54,7 @@ const HabitualWastedList = () => {
   };
 
   return (
-    <div className="overflow-x-auto px-4">
+    <div className="overflow-x-auto">
       {habitualWasteList && habitualWasteList.length > 0 ? (
         <table className="w-full border-collapse text-left text-sm sm:text-base">
           <thead>

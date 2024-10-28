@@ -41,7 +41,7 @@ const AddHabitualWaste = () => {
   };
 
   return (
-    <div className="px-4">
+    <div className="space-y-2">
       <h2 className="text-2xl font-bold text-gray-100">無駄づかいリスト</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}

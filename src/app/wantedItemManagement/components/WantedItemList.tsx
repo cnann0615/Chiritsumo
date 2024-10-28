@@ -63,7 +63,7 @@ const WantedItemList = () => {
   };
 
   return (
-    <div className="px-4">
+    <div>
       <h2 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">
         欲しい物リスト
       </h2>
