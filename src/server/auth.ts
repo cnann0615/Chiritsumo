@@ -59,7 +59,7 @@ export const authOptions: NextAuthOptions = {
         return true;
       } catch (error) {
         console.error("Error checking or creating record on signIn:", error);
-        return false;
+        return true;
       }
     },
   },
