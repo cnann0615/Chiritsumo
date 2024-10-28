@@ -12,9 +12,12 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+interface LayoutProps {
+  children: React.ReactNode;
+  types?: string;
+}
+
+export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body className="bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
