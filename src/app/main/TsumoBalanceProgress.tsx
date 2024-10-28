@@ -32,7 +32,7 @@ const TsumoBalanceProgress = () => {
       <div className="flex justify-center p-4 sm:p-6">
         <div className="w-full max-w-2xl">
           <h2 className="mb-4 text-center text-xl font-bold sm:text-2xl">
-            つも進捗
+            欲しい物リスト進捗
           </h2>
           {wantedItemList && wantedItemList.length > 0 ? (
             wantedItemList.map((item) => (
