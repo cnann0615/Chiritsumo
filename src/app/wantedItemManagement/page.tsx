@@ -8,7 +8,7 @@ import { getOgp } from "../lib/getOgp";
 
 const Page = async () => {
   return (
-    <div className="min-h-[calc(100vh-64px)] py-4">
+    <div className="min-h-[calc(100vh-64px)] pb-6 pt-4">
       <HydrateClient>
         <WrapSessionProvider>
           <AddWantedItem />

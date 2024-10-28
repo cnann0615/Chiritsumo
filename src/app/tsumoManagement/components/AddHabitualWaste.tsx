@@ -42,7 +42,9 @@ const AddHabitualWaste = () => {
 
   return (
     <div className="space-y-2">
-      <h2 className="text-2xl font-bold text-gray-100">無駄づかいリスト</h2>
+      <h2 className="text-xl font-bold text-gray-100 sm:text-2xl">
+        無駄づかいリスト
+      </h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center"
