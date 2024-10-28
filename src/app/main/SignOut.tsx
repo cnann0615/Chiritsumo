@@ -11,7 +11,8 @@ const SignOut = () => {
         ちりつも
       </h1>
       <h3 className="mb-6 text-lg sm:text-xl md:text-2xl">
-        無駄な出費を抑えて、欲しいものを手に入れよう！
+        <div className="inline-block">無駄な出費を抑えて、</div>
+        <div className="inline-block">欲しいものを手に入れよう！</div>
       </h3>
       <Link
         href={"/api/auth/signin"}
