@@ -62,7 +62,7 @@ const AddTsumo = () => {
           <div className="inline-block">無駄づかいを我慢して</div>
           <div className="inline-block">
             残高を<span className="text-pink-500">つも</span>
-            らせよう！
+            らせ、欲しい物を手に入れよう！
           </div>
         </h2>
 

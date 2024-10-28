@@ -5,6 +5,7 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 export const metadata: Metadata = {
   title: "Chiritsumo",
@@ -25,6 +26,7 @@ export default function RootLayout({ children, types }: LayoutProps) {
         <div className="px-[5%]">
           <TRPCReactProvider>{children}</TRPCReactProvider>
         </div>
+        <Footer />
       </body>
     </html>
   );
