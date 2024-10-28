@@ -1,17 +1,26 @@
 "use client";
 import { WantedItem } from "@prisma/client";
-import React from "react";
+import React, { useState } from "react";
 import { api } from "~/trpc/react";
 
-const TsumoBalanceProgress = () => {
-  const utils = api.useUtils();
+const WantedItemList = () => {
   const { data: wantedItemList, refetch } = api.wantedItem.read.useQuery();
-  const { data: tsumoBalance } = api.tsumoBalance.read.useQuery();
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editData, setEditData] = useState<{
+    name: string;
+    price: string;
+    url: string;
+  }>({
+    name: "",
+    price: "",
+    url: "",
+  });
 
   // ミューテーションを定義
-  const updateTsumoBalance = api.tsumoBalance.update.useMutation({
+  const updateWantedItem = api.wantedItem.update.useMutation({
     onSuccess: async () => {
-      await utils.tsumoBalance.read.invalidate();
+      await refetch();
+      setEditId(null);
     },
   });
   const deleteWantedItem = api.wantedItem.delete.useMutation({
@@ -20,30 +29,97 @@ const TsumoBalanceProgress = () => {
     },
   });
 
-  const handleBuy = async (item: WantedItem) => {
-    if (window.confirm("つも残高をこの商品に使いますか？")) {
-      updateTsumoBalance.mutate({ tsumo: -item.price });
-      deleteWantedItem.mutate({ id: item.id });
-    }
+  // 編集モード開始
+  const handleEdit = (wantedItem: WantedItem) => {
+    setEditId(wantedItem.id);
+    setEditData({
+      name: wantedItem.name,
+      price: wantedItem.price.toString(),
+      url: wantedItem.url,
+    });
   };
 
-  if (tsumoBalance) {
-    return (
-      <div className="flex justify-center p-4 sm:p-6">
-        <div className="w-full max-w-2xl">
-          <h2 className="mb-4 text-center text-xl font-bold sm:text-2xl">
-            つも進捗
-          </h2>
-          {wantedItemList?.map((item) => (
-            <article
-              key={item.id}
-              className="mb-4 rounded border border-gray-500 bg-gray-900 p-4 shadow-xl"
-            >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex-1">
-                  <div className="flex items-end gap-2 sm:gap-3">
-                    <h3 className="text-lg font-semibold">{item.name}</h3>
-                    <p className="text-sm text-gray-500 sm:text-base">
+  // 編集内容を保持
+  const handleSave = async (id: string) => {
+    const wantedItemPrice = editData.price === "" ? 0 : Number(editData.price);
+    updateWantedItem.mutate({
+      id,
+      ...{
+        name: editData.name,
+        price: wantedItemPrice,
+        url: editData.url,
+      },
+    });
+  };
+
+  // 編集をキャンセル
+  const handleCancel = () => {
+    setEditId(null);
+  };
+
+  // 削除
+  const handleDelete = async (id: string) => {
+    window.confirm("削除しますか？") && deleteWantedItem.mutate({ id });
+  };
+
+  return (
+    <div className="px-4">
+      <h2 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">
+        欲しい物リスト
+      </h2>
+      {wantedItemList && wantedItemList.length > 0 ? (
+        wantedItemList.map((item) => (
+          <article
+            key={item.id}
+            className="mb-4 flex flex-col items-start gap-4 rounded border border-gray-500 bg-gray-900 p-4 shadow-xl sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="w-full flex-1">
+              {editId === item.id ? (
+                <div className="flex flex-col gap-2">
+                  <input
+                    type="text"
+                    value={editData.name}
+                    onChange={(e) =>
+                      setEditData((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                    placeholder="商品名"
+                  />
+                  <input
+                    type="number"
+                    value={editData.price}
+                    onChange={(e) =>
+                      setEditData((prev) => ({
+                        ...prev,
+                        price: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                    placeholder="価格"
+                  />
+                  <input
+                    type="url"
+                    value={editData.url}
+                    onChange={(e) =>
+                      setEditData((prev) => ({
+                        ...prev,
+                        url: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                    placeholder="URL"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-end gap-3">
+                    <h3 className="text-lg font-semibold text-gray-100">
+                      {item.name}
+                    </h3>
+                    <p className="text-sm text-gray-300 sm:text-base">
                       Price: ¥{item.price}
                     </p>
                   </div>
@@ -55,38 +131,51 @@ const TsumoBalanceProgress = () => {
                   >
                     詳細を見る
                   </a>
-                  <div className="mt-2 flex items-center gap-2">
-                    <progress
-                      max="1"
-                      value={tsumoBalance!.tsumoBalance / item.price}
-                      className="w-full sm:w-2/3"
-                    ></progress>
-                    <p className="text-sm sm:text-base">
-                      {Math.min(
-                        Math.round(
-                          (tsumoBalance!.tsumoBalance / item.price) * 100,
-                        ),
-                        100,
-                      )}
-                      %
-                    </p>
-                  </div>
                 </div>
-                {tsumoBalance!.tsumoBalance / item.price >= 1 && (
+              )}
+            </div>
+            <div className="flex gap-2">
+              {editId === item.id ? (
+                <>
                   <button
-                    onClick={() => handleBuy(item)}
-                    className="mt-3 w-full rounded bg-purple-900 px-4 py-2 text-white sm:mt-0 sm:w-auto"
+                    onClick={() => handleSave(item.id)}
+                    className="w-full rounded bg-green-500 px-4 py-2 text-white sm:w-auto"
                   >
-                    購入できます！
+                    Save
                   </button>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    );
-  }
+                  <button
+                    onClick={handleCancel}
+                    className="w-full rounded bg-gray-400 px-4 py-2 text-white sm:w-auto"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="w-full rounded bg-pink-500 px-4 py-2 text-white sm:w-auto"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="w-full rounded bg-gray-700 px-4 py-2 text-white sm:w-auto"
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+            </div>
+          </article>
+        ))
+      ) : (
+        <p className="text-center text-gray-500">
+          欲しい物リストが空です。新しいアイテムを追加してください。
+        </p>
+      )}
+    </div>
+  );
 };
 
-export default TsumoBalanceProgress;
+export default WantedItemList;

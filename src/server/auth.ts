@@ -39,29 +39,6 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
-    // サインインしたときに、Tsumo Balanceテーブルに新しいレコードを作成する
-    signIn: async ({ user }) => {
-      try {
-        // 既存レコードを確認
-        const existingRecord = await db.tsumoBalance.findUnique({
-          where: { userId: user.id },
-        });
-
-        // 既存レコードがなければ新規レコードを作成
-        if (!existingRecord) {
-          await db.tsumoBalance.create({
-            data: {
-              userId: user.id,
-              tsumoBalance: 0,
-            },
-          });
-        }
-        return true;
-      } catch (error) {
-        console.error("Error checking or creating record on signIn:", error);
-        return true;
-      }
-    },
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
