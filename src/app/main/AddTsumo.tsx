@@ -20,8 +20,12 @@ const AddTsumo = () => {
 
   const updateTsumoBalance = api.tsumoBalance.update.useMutation({
     onSuccess: async () => {
-      await utils.tsumoBalance.read.invalidate();
-      reset();
+      try {
+        await utils.tsumoBalance.read.invalidate();
+        reset();
+      } catch (error) {
+        console.error("Error updating tsumo balance:", error);
+      }
     },
   });
 
