@@ -23,7 +23,7 @@ export default function RootLayout({ children, types }: LayoutProps) {
     <html lang="en" className={`${GeistSans.variable}`}>
       <body className="bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         <Header />
-        <div className="px-[5%]">
+        <div className="mt-[64px] px-[5%]">
           <TRPCReactProvider>{children}</TRPCReactProvider>
         </div>
         <Footer />

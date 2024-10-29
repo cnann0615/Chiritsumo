@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { api } from "~/trpc/react";
 
 const WantedItemList = () => {
-  const { data: wantedItemList, refetch } = api.wantedItem.read.useQuery();
+  const utils = api.useUtils();
+  const { data: wantedItemList } = api.wantedItem.read.useQuery();
   const [editId, setEditId] = useState<string | null>(null);
   const [editData, setEditData] = useState<{
     name: string;
@@ -19,13 +20,13 @@ const WantedItemList = () => {
   // ミューテーションを定義
   const updateWantedItem = api.wantedItem.update.useMutation({
     onSuccess: async () => {
-      await refetch();
+      await utils.wantedItem.read.invalidate();
       setEditId(null);
     },
   });
   const deleteWantedItem = api.wantedItem.delete.useMutation({
     onSuccess: async () => {
-      await refetch();
+      await utils.wantedItem.read.invalidate();
     },
   });
 

@@ -1,11 +1,14 @@
 "use client";
 import { HabitualWaste } from "@prisma/client";
+import { utils } from "prettier/doc.js";
 import React, { useState } from "react";
+import { util } from "zod";
 import { api } from "~/trpc/react";
 
 const HabitualWastedList = () => {
-  const { data: habitualWasteList, refetch } =
-    api.habitualWaste.read.useQuery();
+  const utils = api.useUtils();
+
+  const { data: habitualWasteList } = api.habitualWaste.read.useQuery();
 
   // 編集状態管理
   const [editId, setEditId] = useState<string | null>(null);
@@ -17,13 +20,13 @@ const HabitualWastedList = () => {
   // ミューテーションを定義
   const updateHabitualWaste = api.habitualWaste.update.useMutation({
     onSuccess: async () => {
-      await refetch();
+      await utils.habitualWaste.read.invalidate();
       setEditId(null);
     },
   });
   const deleteHabitualWaste = api.habitualWaste.delete.useMutation({
     onSuccess: async () => {
-      await refetch();
+      await utils.habitualWaste.read.invalidate();
     },
   });
 

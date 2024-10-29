@@ -14,7 +14,7 @@ const formattedDate = (date: Date): string => {
 };
 
 const TsumoLogList = () => {
-  const { data: tsumoList, refetch } = api.tsumoLog.read.useQuery();
+  const { data: tsumoList } = api.tsumoLog.read.useQuery();
   const utils = api.useUtils();
   const [editId, setEditId] = useState<string | null>(null);
   const [preEditData, setPreEditData] = useState<{
@@ -34,7 +34,7 @@ const TsumoLogList = () => {
       updateTsumoBalance.mutate({ tsumo: -preEditData.tsumo });
       updateTsumoBalance.mutate({ tsumo: Number(editData.tsumo) });
       await utils.tsumoBalance.read.invalidate();
-      await refetch();
+      await utils.tsumoLog.read.invalidate();
     },
   });
 
@@ -42,7 +42,7 @@ const TsumoLogList = () => {
     onSuccess: async (tsumo) => {
       updateTsumoBalance.mutate({ tsumo: -tsumo.tsumo });
       await utils.tsumoBalance.read.invalidate();
-      await refetch();
+      await utils.tsumoLog.read.invalidate();
     },
   });
   const updateTsumoBalance = api.tsumoBalance.update.useMutation();

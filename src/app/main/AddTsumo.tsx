@@ -2,9 +2,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
-import { HabitualWaste, TsumoLog } from "@prisma/client";
+import { TsumoLog } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { api } from "~/trpc/react";
+import confetti from "canvas-confetti";
 
 type FormData = {
   title: string;
@@ -33,6 +34,11 @@ const AddTsumo = () => {
   } = useForm<FormData>();
 
   const onSubmit = (data: FormData) => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
     const newTsumo: Omit<TsumoLog, "id" | "createdAt"> = {
       title: data.title,
       tsumo: Number(data.tsumo),
@@ -88,7 +94,7 @@ const AddTsumo = () => {
                 type="text"
                 {...register("title", { required: "タイトルは必須です" })}
                 className="w-full rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                placeholder="タイトルを入力"
+                placeholder="我慢したものを入力"
               />
             </div>
             <div className="flex flex-col md:w-1/2">
@@ -100,11 +106,12 @@ const AddTsumo = () => {
               />
             </div>
           </div>
-
-          <Button
-            text="我慢できた！！！"
-            pending={updateTsumoBalance.isPending}
-          />
+          <div className="mx-auto w-[50%]">
+            <Button
+              text="我慢できた！！！"
+              pending={updateTsumoBalance.isPending}
+            />
+          </div>
 
           <div className="flex justify-center space-x-2">
             {errors.title && (

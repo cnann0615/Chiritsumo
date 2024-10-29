@@ -1,9 +1,8 @@
 import WrapSessionProvider from "../components/WrapSessionProvider";
-import { api, HydrateClient } from "~/trpc/server";
+import { HydrateClient } from "~/trpc/server";
 import AddTsumo from "./AddTsumo";
 import TsumoBalanceDisplay from "./TsumoBalanceDisplay";
 import { getServerAuthSession } from "~/server/auth";
-import WantedItemList from "../wantedItemManagement/components/WantedItemList";
 import TsumoBalanceProgress from "./TsumoBalanceProgress";
 import { db } from "~/server/db";
 
