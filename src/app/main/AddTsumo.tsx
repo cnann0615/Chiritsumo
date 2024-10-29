@@ -16,6 +16,7 @@ const AddTsumo = () => {
   const utils = api.useUtils();
   const { data: session } = useSession();
   const { data: habitualWasteList } = api.habitualWaste.read.useQuery();
+  const createTsumoLog = api.tsumoLog.create.useMutation();
 
   const updateTsumoBalance = api.tsumoBalance.update.useMutation({
     onSuccess: async () => {
@@ -23,7 +24,6 @@ const AddTsumo = () => {
       reset();
     },
   });
-  const createTsumoLog = api.tsumoLog.create.useMutation();
 
   const {
     register,
