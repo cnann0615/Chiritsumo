@@ -24,7 +24,10 @@ const AddTsumo = () => {
         await utils.tsumoBalance.read.invalidate();
         reset();
       } catch (error) {
-        console.error("Error updating tsumo balance:", error);
+        console.error(
+          "Error invalidating tsumo balance or resetting form:",
+          error,
+        );
       }
     },
   });
@@ -50,8 +53,14 @@ const AddTsumo = () => {
     };
 
     try {
-      await createTsumoLog.mutateAsync(newTsumo);
-      await updateTsumoBalance.mutateAsync({ tsumo: Number(data.tsumo) });
+      await createTsumoLog.mutateAsync(newTsumo).catch((error) => {
+        console.error("Error creating tsumo log:", error);
+      });
+      await updateTsumoBalance
+        .mutateAsync({ tsumo: Number(data.tsumo) })
+        .catch((error) => {
+          console.error("Error updating tsumo balance:", error);
+        });
     } catch (error) {
       console.error("Error updating tsumo balance or creating log:", error);
     }
