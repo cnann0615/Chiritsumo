@@ -19,6 +19,7 @@ const config = {
     "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-unused-expressions": "off",
+    "@typescript-eslint/no-floating-promises": "off",
   },
 };
 module.exports = config;
