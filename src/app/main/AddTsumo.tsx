@@ -33,7 +33,7 @@ const AddTsumo = () => {
     reset,
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     confetti({
       particleCount: 100,
       spread: 70,
@@ -44,8 +44,13 @@ const AddTsumo = () => {
       tsumo: Number(data.tsumo),
       userId: session!.user.id,
     };
-    createTsumoLog.mutate(newTsumo);
-    updateTsumoBalance.mutate({ tsumo: Number(data.tsumo) });
+
+    try {
+      await createTsumoLog.mutateAsync(newTsumo);
+      await updateTsumoBalance.mutateAsync({ tsumo: Number(data.tsumo) });
+    } catch (error) {
+      console.error("Error updating tsumo balance or creating log:", error);
+    }
   };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
