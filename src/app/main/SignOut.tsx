@@ -8,7 +8,7 @@ const SignOut = () => {
     <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-4 text-center">
       <TbMountain size={180} className="md:size-250" data-testid="icon" />
       <h1 className="mb-3 text-4xl font-bold sm:text-5xl md:text-6xl">
-        ちりつも
+        ちり<span className="text-pink-500">つも</span>
       </h1>
       <h3 className="mb-6 text-lg sm:text-xl md:text-2xl">
         <div className="inline-block">無駄な出費を抑えて、</div>
