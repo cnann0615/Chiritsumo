@@ -22,6 +22,11 @@ const AddTsumo = () => {
     onSuccess: async () => {
       try {
         await utils.tsumoBalance.read.invalidate();
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
         reset();
       } catch (error) {
         console.error("Error updating tsumo balance:", error);
@@ -38,11 +43,6 @@ const AddTsumo = () => {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
     const newTsumo: Omit<TsumoLog, "id" | "createdAt"> = {
       title: data.title,
       tsumo: Number(data.tsumo),

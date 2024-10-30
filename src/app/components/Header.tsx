@@ -69,7 +69,7 @@ const Header = async () => {
                 className="rounded-full"
               />
             ) : (
-              <div className="h-[32px] w-[32px] rounded-full"></div>
+              ""
             )}
 
             <span className="hidden font-medium sm:block">
