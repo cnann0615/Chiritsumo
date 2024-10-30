@@ -43,7 +43,7 @@ const AddHabitualWaste = () => {
   return (
     <div className="space-y-2">
       <h2 className="text-xl font-bold text-gray-100 sm:text-2xl">
-        無駄づかいリスト
+        習慣的な無駄づかい（登録）
       </h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -54,7 +54,7 @@ const AddHabitualWaste = () => {
             type="text"
             {...register("title", { required: "タイトルは必須です" })}
             className="w-full rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            placeholder="無駄遣いの内容を入力"
+            placeholder="無駄づかいの内容を入力"
           />
           {errors.title && (
             <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
@@ -69,7 +69,7 @@ const AddHabitualWaste = () => {
                 value > 0 || "値段は正の数である必要があります",
             })}
             className="w-full rounded-md border border-gray-600 bg-black bg-opacity-10 p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            placeholder="無駄遣いの金額を入力"
+            placeholder="無駄づかいの金額を入力"
           />
           {errors.tsumo && (
             <p className="mt-1 text-sm text-red-500">{errors.tsumo.message}</p>

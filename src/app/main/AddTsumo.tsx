@@ -57,44 +57,41 @@ const AddTsumo = () => {
     }
   };
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedWaste = habitualWasteList?.find(
-      (waste) => waste.id === event.target.value,
-    );
-    if (selectedWaste) {
-      setValue("title", selectedWaste.title);
-      setValue("tsumo", selectedWaste.tsumo);
-    } else {
-      setValue("title", "");
-      setValue("tsumo", 0);
-    }
-  };
+  // const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedWaste = habitualWasteList?.find(
+  //     (waste) => waste.id === event.target.value,
+  //   );
+  //   if (selectedWaste) {
+  //     setValue("title", selectedWaste.title);
+  //     setValue("tsumo", selectedWaste.tsumo);
+  //   } else {
+  //     setValue("title", "");
+  //     setValue("tsumo", 0);
+  //   }
+  // };
 
   return (
     <div className="flex justify-center p-4 text-gray-300 sm:p-6">
       <div className="w-full max-w-lg">
-        <h2 className="mb-6 text-center text-xl font-bold text-gray-100 sm:text-2xl">
-          <div className="inline-block">無駄づかいを我慢して</div>
-          <div className="inline-block">
-            残高を<span className="text-pink-500">つも</span>
-            らせ、<div className="inline-block">欲しい物を手に入れよう！!</div>
-          </div>
+        <h2 className="mb-6 text-center text-2xl font-bold text-gray-100 sm:text-2xl">
+          <div className="block">無駄づかいを我慢して記録し、</div>
+          <div className="block">欲しい物を手に入れよう！！！！！</div>
         </h2>
 
-        {/* セレクトボックス */}
+        {/* セレクトボックス
         <div className="mb-4 flex justify-center">
           <select
             onChange={handleSelectChange}
             className="w-full max-w-md rounded-md border bg-transparent p-3 text-center text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 sm:w-[80%]"
           >
-            <option value="">無駄づかいリストから選択</option>
+            <option value="">登録済みリストから自動入力</option>
             {habitualWasteList?.map((waste) => (
               <option key={waste.id} value={waste.id}>
                 {waste.title} / ¥{waste.tsumo}
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <div className="md:flex md:items-center md:gap-4">
@@ -111,7 +108,7 @@ const AddTsumo = () => {
                 type="number"
                 {...register("tsumo", { required: "値段は必須です" })}
                 className="w-full rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                placeholder="値段を入力"
+                placeholder="値段（節約額）を入力"
               />
             </div>
           </div>

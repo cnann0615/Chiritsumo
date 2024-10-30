@@ -27,7 +27,7 @@ const Footer = async () => {
               className="flex flex-col items-center text-white hover:text-pink-500"
             >
               <AiOutlineUnorderedList size={22} />
-              <span>つも管理</span>
+              <span>ログ</span>
             </Link>
           </li>
           <li className="flex flex-col items-center">

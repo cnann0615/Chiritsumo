@@ -16,7 +16,7 @@ const page = async () => {
           <HydrateClient>
             <WrapSessionProvider>
               <div className="space-y-10 pb-10 pt-4">
-                <HabitualWasteManagement />
+                {/* <HabitualWasteManagement /> */}
                 <TsumoLogList />
               </div>
             </WrapSessionProvider>

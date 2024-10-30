@@ -16,14 +16,13 @@ const TsumoBalanceDisplay = () => {
   }, [isLoading]);
 
   return (
-    <div className="flex flex-col items-center text-2xl">
-      <div className="flex h-48 items-center justify-center pt-4 text-[100px] font-bold sm:h-60 sm:text-[150px]">
+    <div className="mb-16 mt-32 flex flex-col items-center text-2xl">
+      <h3 className="mb-4 text-2xl font-semibold sm:mb-6 sm:text-5xl">残高</h3>
+      <div className="mb-2 text-[100px] font-bold leading-none sm:mb-4 sm:text-[150px]">
         {/* メインの金額表示 */}
         {isLoading ? randomNumber : tsumoBalance?.tsumoBalance}
-        <div>
-          <span className="text-2xl sm:text-5xl">円</span>
-        </div>
       </div>
+      <div className="text-2xl font-semibold sm:text-5xl">円</div>
     </div>
   );
 };

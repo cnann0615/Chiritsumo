@@ -26,7 +26,7 @@ const Main = async () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)]">
+    <div className="mb-20 mt-[64px] min-h-[calc(100vh-64px)]">
       <HydrateClient>
         <WrapSessionProvider>
           <TsumoBalanceDisplay />

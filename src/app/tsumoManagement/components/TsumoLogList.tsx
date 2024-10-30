@@ -72,10 +72,8 @@ const TsumoLogList = () => {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <h1 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">
-        つもログ
-      </h1>
+    <div className="mb-20 overflow-x-auto">
+      <h1 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">ログ</h1>
       {tsumoList && tsumoList.length > 0 ? (
         <table className="w-full border-collapse text-left text-sm sm:text-base">
           <thead>

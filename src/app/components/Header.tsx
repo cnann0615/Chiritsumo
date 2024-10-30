@@ -41,7 +41,7 @@ const Header = async () => {
                   className="flex items-center gap-2 hover:text-pink-300"
                 >
                   <AiOutlineUnorderedList size={20} />
-                  つも管理
+                  ログ
                 </Link>
               </li>
               <li>
@@ -75,7 +75,7 @@ const Header = async () => {
             <span className="hidden font-medium sm:block">
               {session.user.name}
             </span>
-            <Link href="/api/auth/signout" className="hover:text-gray-300">
+            <Link href="/api/auth/signout" className="hover:text-pink-300">
               <IoIosLogOut size={25} />
             </Link>
           </div>
