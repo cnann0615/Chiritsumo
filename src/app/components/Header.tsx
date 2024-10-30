@@ -60,13 +60,18 @@ const Header = async () => {
         {/* ログイン情報 */}
         {session && (
           <div className="flex items-center gap-4">
-            <Image
-              src={session.user.image!}
-              alt="User Image"
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
+            {session.user.image ? (
+              <Image
+                src={session.user.image}
+                alt="User Image"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="h-[32px] w-[32px] rounded-full"></div>
+            )}
+
             <span className="hidden font-medium sm:block">
               {session.user.name}
             </span>

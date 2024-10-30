@@ -10,8 +10,16 @@ import Footer from "./components/Footer";
 export const metadata: Metadata = {
   title: "Chiritsumo",
   description: "無駄な消費を我慢して欲しい物を手に入れよう！",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.ico",
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/apple-icon.ico",
+    },
+  },
 };
+<meta name="apple-mobile-web-app-capable" content="yes"></meta>;
 
 interface LayoutProps {
   children: React.ReactNode;

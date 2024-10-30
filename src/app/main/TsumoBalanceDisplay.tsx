@@ -21,7 +21,7 @@ const TsumoBalanceDisplay = () => {
         {/* メインの金額表示 */}
         {isLoading ? randomNumber : tsumoBalance?.tsumoBalance}
         <div>
-          <span className="text-3xl sm:text-5xl">円</span>
+          <span className="text-2xl sm:text-5xl">円</span>
         </div>
       </div>
     </div>
