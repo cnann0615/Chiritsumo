@@ -73,9 +73,9 @@ const AddTsumo = () => {
   return (
     <div className="flex justify-center p-4 text-gray-300 sm:p-6">
       <div className="w-full max-w-lg">
-        <h2 className="mb-6 text-center text-2xl font-bold text-gray-100 sm:text-2xl">
-          <div className="block">無駄づかいを我慢して記録し、</div>
-          <div className="block">欲しい物を手に入れよう！！！！！</div>
+        <h2 className="mb-6 text-center text-xl font-bold text-gray-100 sm:text-2xl">
+          <div className="block">無駄づかいを我慢して</div>
+          <div className="block">欲しい物を手に入れよう！</div>
         </h2>
 
         {/* セレクトボックス
@@ -114,7 +114,7 @@ const AddTsumo = () => {
           </div>
           <div className="mx-auto w-[50%]">
             <Button
-              text="我慢できた！！！"
+              text="我慢できた！！"
               pending={updateTsumoBalance.isPending}
             />
           </div>
