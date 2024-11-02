@@ -2,6 +2,7 @@
 import { WantedItem } from "@prisma/client";
 import React from "react";
 import { api } from "~/trpc/react";
+import Button from "../components/Button";
 
 const TsumoBalanceProgress = () => {
   const utils = api.useUtils();
@@ -74,12 +75,13 @@ const TsumoBalanceProgress = () => {
                     </div>
                   </div>
                   {tsumoBalance!.tsumoBalance / item.price >= 1 && (
-                    <button
+                    <Button
+                      text={"購入できます！"}
+                      size={"large"}
+                      bgColor={"pink"}
                       onClick={() => handleBuy(item)}
-                      className="mt-3 w-full rounded bg-purple-900 px-4 py-2 text-white sm:mt-0 sm:w-auto"
-                    >
-                      購入できます！
-                    </button>
+                      pending={deleteWantedItem.isPending}
+                    />
                   )}
                 </div>
               </article>
