@@ -5,7 +5,7 @@ import SignOut from "../main/SignOut";
 import TsumoLogList from "./components/TsumoLogList";
 import WrapSessionProvider from "../components/WrapSessionProvider";
 import { HydrateClient } from "~/trpc/server";
-import HabitualWasteManagement from "./components/HabitualWasteManagement";
+// import HabitualWasteManagement from "./components/HabitualWasteManagement";
 
 const page = async () => {
   const session = await getServerAuthSession();

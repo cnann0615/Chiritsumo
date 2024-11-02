@@ -15,7 +15,7 @@ export const createQueryClient = () =>
       queries: {
         // データを再フェッチするまでの時間を設定
         // 同じデータに対する新たなクエリは、キャッシュされたデータを使用し、再フェッチは行いません。
-        staleTime: 30 * 1000,
+        staleTime: 0,
       },
       // サーバーからクライアントへのデータ転送（デハイドレーション）の設定
       dehydrate: {

@@ -1,6 +1,7 @@
 "use client";
 import { WantedItem } from "@prisma/client";
 import React, { useState } from "react";
+import Button from "~/app/components/Button";
 import { api } from "~/trpc/react";
 
 const WantedItemList = () => {
@@ -68,114 +69,122 @@ const WantedItemList = () => {
       <h2 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">
         欲しい物リスト
       </h2>
-      {wantedItemList && wantedItemList.length > 0 ? (
-        wantedItemList.map((item) => (
-          <article
-            key={item.id}
-            className="mb-4 flex flex-col items-start gap-4 rounded border border-gray-500 bg-gray-900 p-4 shadow-xl sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="w-full flex-1">
-              {editId === item.id ? (
-                <div className="flex flex-col gap-2">
-                  <input
-                    type="text"
-                    value={editData.name}
-                    onChange={(e) =>
-                      setEditData((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
-                    }
-                    className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
-                    placeholder="商品名"
-                  />
-                  <input
-                    type="number"
-                    value={editData.price}
-                    onChange={(e) =>
-                      setEditData((prev) => ({
-                        ...prev,
-                        price: e.target.value,
-                      }))
-                    }
-                    className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
-                    placeholder="価格"
-                  />
-                  <input
-                    type="url"
-                    value={editData.url}
-                    onChange={(e) =>
-                      setEditData((prev) => ({
-                        ...prev,
-                        url: e.target.value,
-                      }))
-                    }
-                    className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
-                    placeholder="URL"
-                  />
-                </div>
-              ) : (
-                <div>
-                  <div className="flex items-end gap-3">
-                    <h3 className="text-lg font-semibold text-gray-100">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-gray-300 sm:text-base">
-                      Price: ¥{item.price}
-                    </p>
+      <div>
+        {wantedItemList && wantedItemList.length > 0 ? (
+          wantedItemList.map((item) => (
+            <article
+              key={item.id}
+              className="mb-4 flex flex-col items-start gap-4 rounded border border-gray-500 bg-gray-900 p-4 shadow-xl sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div className="w-full flex-1">
+                {editId === item.id ? (
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      value={editData.name}
+                      onChange={(e) =>
+                        setEditData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                      className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                      placeholder="商品名"
+                    />
+                    <input
+                      type="number"
+                      value={editData.price}
+                      onChange={(e) =>
+                        setEditData((prev) => ({
+                          ...prev,
+                          price: e.target.value,
+                        }))
+                      }
+                      className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                      placeholder="価格"
+                    />
+                    <input
+                      type="url"
+                      value={editData.url}
+                      onChange={(e) =>
+                        setEditData((prev) => ({
+                          ...prev,
+                          url: e.target.value,
+                        }))
+                      }
+                      className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
+                      placeholder="URL"
+                    />
                   </div>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 underline"
-                  >
-                    詳細を見る
-                  </a>
+                ) : (
+                  <div>
+                    <div className="flex items-end gap-3">
+                      <h3 className="text-lg font-semibold text-gray-100">
+                        {item.name}
+                      </h3>
+                      <p className="text-sm text-gray-300 sm:text-base">
+                        Price: ¥{item.price}
+                      </p>
+                    </div>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      詳細を見る
+                    </a>
+                  </div>
+                )}
+              </div>
+              <div>
+                <div className="flex gap-2">
+                  {editId === item.id ? (
+                    <>
+                      <Button
+                        text={"Save"}
+                        size={"medium"}
+                        bgColor={"green"}
+                        onClick={() => handleSave(item.id)}
+                        pending={updateWantedItem.isPending}
+                      />
+                      <Button
+                        text={"Cancel"}
+                        size={"medium"}
+                        bgColor={"gray"}
+                        onClick={() => handleCancel()}
+                        pending={false}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        text={"Edit"}
+                        size={"medium"}
+                        bgColor={"pink"}
+                        onClick={() => handleEdit(item)}
+                        pending={false}
+                      />
+                      <Button
+                        text={"Delete"}
+                        size={"medium"}
+                        bgColor={"gray"}
+                        onClick={() => handleDelete(item.id)}
+                        pending={deleteWantedItem.isPending}
+                      />
+                    </>
+                  )}
                 </div>
-              )}
-            </div>
-            <div className="flex gap-2">
-              {editId === item.id ? (
-                <>
-                  <button
-                    onClick={() => handleSave(item.id)}
-                    className="w-full rounded bg-green-500 px-4 py-2 text-white sm:w-auto"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    className="w-full rounded bg-gray-400 px-4 py-2 text-white sm:w-auto"
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => handleEdit(item)}
-                    className="w-full rounded bg-pink-500 px-4 py-2 text-white sm:w-auto"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="w-full rounded bg-gray-700 px-4 py-2 text-white sm:w-auto"
-                  >
-                    Delete
-                  </button>
-                </>
-              )}
-            </div>
-          </article>
-        ))
-      ) : (
-        <p className="text-center text-gray-500">
-          <div className="inline-block">欲しい物リストが空です。</div>
-          <div className="inline-block">新しいアイテムを追加してください。</div>
-        </p>
-      )}
+              </div>
+            </article>
+          ))
+        ) : (
+          <div className="text-center text-gray-500">
+            <p className="inline-block">欲しい物リストが空です。</p>
+            <p className="inline-block">新しいアイテムを追加してください。</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

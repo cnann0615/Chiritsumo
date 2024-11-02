@@ -15,7 +15,7 @@ type FormData = {
 const AddTsumo = () => {
   const utils = api.useUtils();
   const { data: session } = useSession();
-  const { data: habitualWasteList } = api.habitualWaste.read.useQuery();
+  // const { data: habitualWasteList } = api.habitualWaste.read.useQuery();
   const createTsumoLog = api.tsumoLog.create.useMutation();
 
   const updateTsumoBalance = api.tsumoBalance.update.useMutation({
@@ -27,7 +27,6 @@ const AddTsumo = () => {
           spread: 70,
           origin: { y: 0.6 },
         });
-        reset();
       } catch (error) {
         console.error("Error updating tsumo balance:", error);
       }
@@ -43,6 +42,7 @@ const AddTsumo = () => {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
+    reset();
     const newTsumo: Omit<TsumoLog, "id" | "createdAt"> = {
       title: data.title,
       tsumo: Number(data.tsumo),
@@ -108,14 +108,16 @@ const AddTsumo = () => {
                 type="number"
                 {...register("tsumo", { required: "値段は必須です" })}
                 className="w-full rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                placeholder="値段（節約額）を入力"
+                placeholder="節約できた額を入力"
               />
             </div>
           </div>
           <div className="mx-auto w-[50%]">
             <Button
               text="我慢できた！！"
-              pending={updateTsumoBalance.isPending}
+              size="large"
+              bgColor="pink"
+              pending={createTsumoLog.isPending}
             />
           </div>
 
