@@ -117,7 +117,7 @@ const AddTsumo = () => {
               text="我慢できた！！"
               size="large"
               bgColor="pink"
-              pending={createTsumoLog.isPending}
+              pending={updateTsumoBalance.isPending}
             />
           </div>
 
