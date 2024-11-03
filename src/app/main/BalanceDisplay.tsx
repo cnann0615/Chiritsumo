@@ -13,7 +13,7 @@ const BalanceDisplay = () => {
     if (isLoading) {
       const intervalId = setInterval(() => {
         setRandomNumber(Math.floor(Math.random() * 90 + 10));
-      }, 10); // 100ミリ秒ごとにランダムな2桁の数字を生成
+      }, 100); // 100ミリ秒ごとにランダムな2桁の数字を生成
       return () => clearInterval(intervalId);
     }
   }, [isLoading]);
