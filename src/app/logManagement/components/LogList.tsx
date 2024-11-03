@@ -5,6 +5,7 @@ import { api } from "~/trpc/react";
 
 import Button from "~/app/components/Button";
 
+// 日付フォーマット用関数
 const formattedDate = (date: Date): string => {
   return date.toLocaleString("ja-JP", {
     year: "numeric",
@@ -15,26 +16,38 @@ const formattedDate = (date: Date): string => {
   });
 };
 
+// ログリストコンポーネント
 const LogList = () => {
+  // ログデータ取得
   const { data: logList, isLoading } = api.log.read.useQuery();
+  // キャッシュ更新用
   const utils = api.useUtils();
+  // 編集中ログidの管理
   const [editId, setEditId] = useState<string | null>(null);
+  // 編集するログの編集前の状態を管理
   const [preEditData, setPreEditData] = useState<{
     title: string;
-    balance: number;
+    price: number;
   }>({
     title: "",
-    balance: 0,
+    price: 0,
   });
-  const [editData, setEditData] = useState<{ title: string; balance: string }>({
+  // 編集中のログの内容を管理
+  const [editData, setEditData] = useState<{ title: string; price: string }>({
     title: "",
-    balance: "",
+    price: "",
   });
+  // 削除中のログのidを管理
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  // ミューテーション定義
+  const updateBalance = api.balance.update.useMutation();
 
   const updateLog = api.log.update.useMutation({
     onSuccess: async () => {
-      updateBalance.mutate({ balance: -preEditData.balance });
-      updateBalance.mutate({ balance: Number(editData.balance) });
+      // 編集前のログの値段を残高から引いて、編集後の値段を足す
+      updateBalance.mutate({ balance: -preEditData.price });
+      updateBalance.mutate({ balance: Number(editData.price) });
       await utils.balance.read.invalidate();
       await utils.log.read.invalidate();
       setEditId(null);
@@ -42,26 +55,29 @@ const LogList = () => {
   });
 
   const deleteLog = api.log.delete.useMutation({
-    onSuccess: async (balance) => {
-      updateBalance.mutate({ balance: -balance.balance });
+    onSuccess: async (log) => {
+      // 削除対象のログの値段を残高から引く
+      updateBalance.mutate({ balance: -log.price });
       await utils.balance.read.invalidate();
       await utils.log.read.invalidate();
+      setDeleteId(null);
     },
   });
-  const updateBalance = api.balance.update.useMutation();
 
-  const handleEdit = (balance: Log) => {
-    setEditId(balance.id);
-    setPreEditData({ title: balance.title, balance: Number(balance.balance) });
-    setEditData({ title: balance.title, balance: balance.balance.toString() });
+  // イベント
+  const handleEdit = (log: Log) => {
+    setEditId(log.id);
+    setPreEditData({ title: log.title, price: Number(log.price) });
+    setEditData({ title: log.title, price: log.price.toString() });
   };
 
   const handleSave = async (id: string) => {
-    const balanceValue = editData.balance === "" ? 0 : Number(editData.balance);
+    // string → numberに変換
+    const _price = editData.price === "" ? 0 : Number(editData.price);
     updateLog.mutate({
       id,
       title: editData.title,
-      balance: balanceValue,
+      price: _price,
     });
   };
 
@@ -70,7 +86,10 @@ const LogList = () => {
   };
 
   const handleDelete = async (id: string) => {
-    window.confirm("本当に削除しますか？") && deleteLog.mutate({ id });
+    if (window.confirm("本当に削除しますか？")) {
+      setDeleteId(id);
+      deleteLog.mutate({ id });
+    }
   };
 
   return (
@@ -95,13 +114,13 @@ const LogList = () => {
                 </tr>
               </thead>
               <tbody>
-                {logList!.map((balance) => (
+                {logList!.map((log) => (
                   <tr
-                    key={balance.id}
+                    key={log.id}
                     className="border-b border-gray-500 bg-black bg-opacity-30"
                   >
                     <td className="p-3">
-                      {editId === balance.id ? (
+                      {editId === log.id ? (
                         <input
                           type="text"
                           value={editData.title}
@@ -115,42 +134,38 @@ const LogList = () => {
                           placeholder="タイトル"
                         />
                       ) : (
-                        <span className="block sm:table-cell">
-                          {balance.title}
-                        </span>
+                        <span className="block sm:table-cell">{log.title}</span>
                       )}
                     </td>
                     <td className="p-3">
-                      {editId === balance.id ? (
+                      {editId === log.id ? (
                         <input
                           type="number"
-                          value={editData.balance}
+                          value={editData.price}
                           onChange={(e) =>
                             setEditData((prev) => ({
                               ...prev,
-                              balance: e.target.value,
+                              price: e.target.value,
                             }))
                           }
                           className="w-full rounded border bg-black bg-opacity-10 p-1 text-gray-100"
                           placeholder="値段"
                         />
                       ) : (
-                        <span className="block sm:table-cell">
-                          {balance.balance}
-                        </span>
+                        <span className="block sm:table-cell">{log.price}</span>
                       )}
                     </td>
-                    <td className="p-3">{formattedDate(balance.createdAt)}</td>
+                    <td className="p-3">{formattedDate(log.createdAt)}</td>
                     <td className="p-3">
                       <div className="flex flex-wrap gap-2">
-                        {editId === balance.id ? (
+                        {editId === log.id ? (
                           <>
                             <Button
                               text={"Save"}
                               size={"small"}
                               bgColor={"green"}
                               pending={updateLog.isPending}
-                              onClick={() => handleSave(balance.id)}
+                              onClick={() => handleSave(log.id)}
                             />
 
                             <Button
@@ -168,14 +183,14 @@ const LogList = () => {
                               size={"small"}
                               bgColor={"pink"}
                               pending={false}
-                              onClick={() => handleEdit(balance)}
+                              onClick={() => handleEdit(log)}
                             />
                             <Button
                               text={"Delete"}
                               size={"small"}
                               bgColor={"gray"}
-                              pending={deleteLog.isPending}
-                              onClick={() => handleDelete(balance.id)}
+                              pending={deleteId == log.id}
+                              onClick={() => handleDelete(log.id)}
                             />
                           </>
                         )}

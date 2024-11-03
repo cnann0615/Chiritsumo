@@ -4,10 +4,15 @@ import React, { useState } from "react";
 import Button from "~/app/components/Button";
 import { api } from "~/trpc/react";
 
+// 欲しいものリストコンポーネント
 const WantedItemList = () => {
+  // キャッシュ更新用
   const utils = api.useUtils();
+  // 欲しいものリスト取得
   const { data: wantedItemList } = api.wantedItem.read.useQuery();
+  // 編集中のアイテムのidを管理
   const [editId, setEditId] = useState<string | null>(null);
+  // 編集の内容を管理
   const [editData, setEditData] = useState<{
     name: string;
     price: string;
@@ -17,6 +22,8 @@ const WantedItemList = () => {
     price: "",
     url: "",
   });
+  // 削除中のアイテムのidを管理
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // ミューテーションを定義
   const updateWantedItem = api.wantedItem.update.useMutation({
@@ -28,10 +35,11 @@ const WantedItemList = () => {
   const deleteWantedItem = api.wantedItem.delete.useMutation({
     onSuccess: async () => {
       await utils.wantedItem.read.invalidate();
+      setDeleteId(null);
     },
   });
 
-  // 編集モード開始
+  // イベント
   const handleEdit = (wantedItem: WantedItem) => {
     setEditId(wantedItem.id);
     setEditData({
@@ -41,7 +49,6 @@ const WantedItemList = () => {
     });
   };
 
-  // 編集内容を保持
   const handleSave = async (id: string) => {
     const wantedItemPrice = editData.price === "" ? 0 : Number(editData.price);
     updateWantedItem.mutate({
@@ -54,14 +61,15 @@ const WantedItemList = () => {
     });
   };
 
-  // 編集をキャンセル
   const handleCancel = () => {
     setEditId(null);
   };
 
-  // 削除
   const handleDelete = async (id: string) => {
-    window.confirm("削除しますか？") && deleteWantedItem.mutate({ id });
+    if (window.confirm("削除しますか？")) {
+      setDeleteId(id);
+      deleteWantedItem.mutate({ id });
+    }
   };
 
   return (
@@ -170,7 +178,7 @@ const WantedItemList = () => {
                         size={"medium"}
                         bgColor={"gray"}
                         onClick={() => handleDelete(item.id)}
-                        pending={deleteWantedItem.isPending}
+                        pending={deleteId == item.id}
                       />
                     </>
                   )}

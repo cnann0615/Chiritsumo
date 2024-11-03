@@ -6,6 +6,7 @@ import WrapSessionProvider from "../components/WrapSessionProvider";
 import { HydrateClient } from "~/trpc/server";
 
 const page = async () => {
+  // セッション情報取得
   const session = await getServerAuthSession();
   return (
     <main>

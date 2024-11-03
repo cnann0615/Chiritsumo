@@ -8,6 +8,7 @@ export default async function Home() {
 
   return (
     <main>
+      {/* TanstackQuery開発者ツール */}
       <ReactQueryDevtools />
       {session ? <Main /> : <SignOut />}
     </main>

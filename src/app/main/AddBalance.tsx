@@ -9,14 +9,27 @@ import confetti from "canvas-confetti";
 
 type FormData = {
   title: string;
-  balance: number;
+  price: number;
 };
 
+// 残高追加（無駄づかいの我慢記録）コンポーネント
 const AddBalance = () => {
+  // キャッシュ更新用
   const utils = api.useUtils();
-  const { data: session } = useSession();
-  const createLog = api.log.create.useMutation();
 
+  // セッション情報取得
+  const { data: session } = useSession();
+
+  // ミューテーション定義
+  const createLog = api.log.create.useMutation({
+    onSuccess: async (newLog) => {
+      try {
+        await updateBalance.mutateAsync({ balance: Number(newLog.price) });
+      } catch (error) {
+        console.error("Error updating balance", error);
+      }
+    },
+  });
   const updateBalance = api.balance.update.useMutation({
     onSuccess: async () => {
       try {
@@ -32,6 +45,7 @@ const AddBalance = () => {
     },
   });
 
+  // フォーム関連
   const {
     register,
     handleSubmit,
@@ -42,15 +56,13 @@ const AddBalance = () => {
   const onSubmit = async (data: FormData) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     reset();
-    const newBalance: Omit<Log, "id" | "createdAt"> = {
+    const newLog: Omit<Log, "id" | "createdAt"> = {
       title: data.title,
-      balance: Number(data.balance),
+      price: Number(data.price),
       userId: session!.user.id,
     };
-
     try {
-      await createLog.mutateAsync(newBalance);
-      await updateBalance.mutateAsync({ balance: Number(data.balance) });
+      await createLog.mutateAsync(newLog);
     } catch (error) {
       console.error("Error updating balance or creating log:", error);
     }
@@ -77,7 +89,7 @@ const AddBalance = () => {
             <div className="flex flex-col md:w-1/2">
               <input
                 type="number"
-                {...register("balance", { required: "値段は必須です" })}
+                {...register("price", { required: "値段は必須です" })}
                 className="w-full rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 placeholder="節約できた額を入力"
               />
@@ -88,7 +100,7 @@ const AddBalance = () => {
               text="我慢できた！！"
               size="large"
               bgColor="pink"
-              pending={updateBalance.isPending}
+              pending={createLog.isPending}
             />
           </div>
 
@@ -96,8 +108,8 @@ const AddBalance = () => {
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title.message}</p>
             )}
-            {errors.balance && (
-              <p className="text-sm text-red-500">{errors.balance.message}</p>
+            {errors.price && (
+              <p className="text-sm text-red-500">{errors.price.message}</p>
             )}
           </div>
         </form>

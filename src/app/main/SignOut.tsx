@@ -3,6 +3,7 @@ import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { TbMountain } from "react-icons/tb";
 
+// サインアウト時のコンポーネント
 const SignOut = () => {
   return (
     <div className="flex min-h-[calc(100vh-132px)] flex-col items-center justify-center px-4 text-center">

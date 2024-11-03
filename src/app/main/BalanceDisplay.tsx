@@ -2,10 +2,13 @@
 import { useState, useEffect } from "react";
 import { api } from "~/trpc/react";
 
+// 残高表示コンポーネント
 const BalanceDisplay = () => {
+  // 残高を取得
   const { data: balance, isLoading } = api.balance.read.useQuery();
-  const [randomNumber, setRandomNumber] = useState(0);
 
+  // 残高を取得中にランダムな数字をシャッフルして表示するアニメーションを表示
+  const [randomNumber, setRandomNumber] = useState(0);
   useEffect(() => {
     if (isLoading) {
       const intervalId = setInterval(() => {

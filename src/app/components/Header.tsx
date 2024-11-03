@@ -24,6 +24,7 @@ const Header = async () => {
               </span>
             </Link>
           </div>
+          {/* メニューはsm以上の時のみ表示。sm以下の場合は、フッターにメニューを表示。 */}
           {session && (
             <ul className="hidden gap-6 sm:flex">
               <li>

@@ -11,6 +11,7 @@ const Footer = async () => {
     <footer className="fixed bottom-0 left-0 w-full bg-gray-800 text-white sm:relative sm:px-[4%] sm:py-6">
       {/* モバイルメニュー */}
       {session && (
+        // sm以下の時にメニューを表示。sm以上の時はヘッダーに表示。
         <ul className="flex justify-around gap-4 bg-gray-700 py-2 pt-2 text-sm sm:hidden">
           <li className="flex flex-col items-center">
             <Link

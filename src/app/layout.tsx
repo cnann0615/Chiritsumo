@@ -18,6 +18,7 @@ export const metadata: Metadata = {
       url: "/apple-icon.ico",
     },
   },
+  appleWebApp: true,
 };
 <meta name="apple-mobile-web-app-capable" content="yes"></meta>;
 

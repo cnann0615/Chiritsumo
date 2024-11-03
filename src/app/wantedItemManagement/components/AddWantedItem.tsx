@@ -13,15 +13,18 @@ type FormData = {
   url: string;
 };
 
+// 欲しいものリスト追加コンポーネント
 const AddWantedItem = () => {
+  // キャッシュ更新用
   const utils = api.useUtils();
+  // セッション情報取得
   const { data: session } = useSession();
 
   // ミューテーションを定義
   const createWantedItem = api.wantedItem.create.useMutation({
     onSuccess: async () => {
       await utils.wantedItem.read.invalidate();
-      reset(); // 成功後にフォームをリセット
+      reset();
     },
   });
 

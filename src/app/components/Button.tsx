@@ -9,7 +9,7 @@ const Button = ({
 }: {
   text: string;
   size?: "small" | "medium" | "large";
-  bgColor: "green" | "gray" | "pink"; // 使用する色を指定
+  bgColor: "green" | "gray" | "pink";
   pending: boolean;
   onClick?: () => void;
 }) => {

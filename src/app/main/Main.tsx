@@ -6,10 +6,11 @@ import { getServerAuthSession } from "~/server/auth";
 import BalanceProgress from "./BalanceProgress";
 import { db } from "~/server/db";
 
+// サインイン時の親コンポーネント
 const Main = async () => {
+  // サインインしたユーザのbalanceテーブルのレコードを作成
   try {
     const session = await getServerAuthSession();
-
     const existingRecord = await db.balance.findUnique({
       where: { userId: session!.user.id },
     });

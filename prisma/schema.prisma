@@ -26,7 +26,7 @@ model Log {
     userId    String
     user      User     @relation(fields: [userId], references: [id])
     title     String
-    balance   Int
+    price     Int
     createdAt DateTime @default(now())
 }
 
