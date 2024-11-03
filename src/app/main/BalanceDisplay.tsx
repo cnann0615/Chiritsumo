@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import { api } from "~/trpc/react";
 
-const TsumoBalanceDisplay = () => {
-  const { data: tsumoBalance, isLoading } = api.tsumoBalance.read.useQuery();
+const BalanceDisplay = () => {
+  const { data: balance, isLoading } = api.balance.read.useQuery();
   const [randomNumber, setRandomNumber] = useState(0);
 
   useEffect(() => {
@@ -20,11 +20,11 @@ const TsumoBalanceDisplay = () => {
       <h3 className="mb-4 text-2xl font-bold sm:mb-6 sm:text-4xl">残高</h3>
       <div className="mb-2 text-[100px] font-bold leading-none sm:mb-4 sm:text-[150px]">
         {/* メインの金額表示 */}
-        {isLoading ? randomNumber : tsumoBalance?.tsumoBalance}
+        {isLoading ? randomNumber : balance?.balance}
       </div>
       <div className="text-3xl font-bold sm:text-5xl">JPY</div>
     </div>
   );
 };
 
-export default TsumoBalanceDisplay;
+export default BalanceDisplay;

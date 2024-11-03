@@ -2,33 +2,32 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
-import { TsumoLog } from "@prisma/client";
+import { Log } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { api } from "~/trpc/react";
 import confetti from "canvas-confetti";
 
 type FormData = {
   title: string;
-  tsumo: number;
+  balance: number;
 };
 
-const AddTsumo = () => {
+const AddBalance = () => {
   const utils = api.useUtils();
   const { data: session } = useSession();
-  // const { data: habitualWasteList } = api.habitualWaste.read.useQuery();
-  const createTsumoLog = api.tsumoLog.create.useMutation();
+  const createLog = api.log.create.useMutation();
 
-  const updateTsumoBalance = api.tsumoBalance.update.useMutation({
+  const updateBalance = api.balance.update.useMutation({
     onSuccess: async () => {
       try {
-        await utils.tsumoBalance.read.invalidate();
+        await utils.balance.read.invalidate();
         confetti({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
         });
       } catch (error) {
-        console.error("Error updating tsumo balance:", error);
+        console.error("Error updating balance:", error);
       }
     },
   });
@@ -37,38 +36,25 @@ const AddTsumo = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
     reset,
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     reset();
-    const newTsumo: Omit<TsumoLog, "id" | "createdAt"> = {
+    const newBalance: Omit<Log, "id" | "createdAt"> = {
       title: data.title,
-      tsumo: Number(data.tsumo),
+      balance: Number(data.balance),
       userId: session!.user.id,
     };
 
     try {
-      await createTsumoLog.mutateAsync(newTsumo);
-      await updateTsumoBalance.mutateAsync({ tsumo: Number(data.tsumo) });
+      await createLog.mutateAsync(newBalance);
+      await updateBalance.mutateAsync({ balance: Number(data.balance) });
     } catch (error) {
-      console.error("Error updating tsumo balance or creating log:", error);
+      console.error("Error updating balance or creating log:", error);
     }
   };
-
-  // const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const selectedWaste = habitualWasteList?.find(
-  //     (waste) => waste.id === event.target.value,
-  //   );
-  //   if (selectedWaste) {
-  //     setValue("title", selectedWaste.title);
-  //     setValue("tsumo", selectedWaste.tsumo);
-  //   } else {
-  //     setValue("title", "");
-  //     setValue("tsumo", 0);
-  //   }
-  // };
 
   return (
     <div className="flex justify-center p-4 text-gray-300 sm:p-6">
@@ -77,21 +63,6 @@ const AddTsumo = () => {
           <div className="block">無駄づかいを我慢して</div>
           <div className="block">欲しい物を手に入れよう！</div>
         </h2>
-
-        {/* セレクトボックス
-        <div className="mb-4 flex justify-center">
-          <select
-            onChange={handleSelectChange}
-            className="w-full max-w-md rounded-md border bg-transparent p-3 text-center text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 sm:w-[80%]"
-          >
-            <option value="">登録済みリストから自動入力</option>
-            {habitualWasteList?.map((waste) => (
-              <option key={waste.id} value={waste.id}>
-                {waste.title} / ¥{waste.tsumo}
-              </option>
-            ))}
-          </select>
-        </div> */}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <div className="md:flex md:items-center md:gap-4">
@@ -106,7 +77,7 @@ const AddTsumo = () => {
             <div className="flex flex-col md:w-1/2">
               <input
                 type="number"
-                {...register("tsumo", { required: "値段は必須です" })}
+                {...register("balance", { required: "値段は必須です" })}
                 className="w-full rounded-md border border-gray-600 bg-[#2a273f] p-3 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 placeholder="節約できた額を入力"
               />
@@ -117,7 +88,7 @@ const AddTsumo = () => {
               text="我慢できた！！"
               size="large"
               bgColor="pink"
-              pending={updateTsumoBalance.isPending}
+              pending={updateBalance.isPending}
             />
           </div>
 
@@ -125,8 +96,8 @@ const AddTsumo = () => {
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title.message}</p>
             )}
-            {errors.tsumo && (
-              <p className="text-sm text-red-500">{errors.tsumo.message}</p>
+            {errors.balance && (
+              <p className="text-sm text-red-500">{errors.balance.message}</p>
             )}
           </div>
         </form>
@@ -135,4 +106,4 @@ const AddTsumo = () => {
   );
 };
 
-export default AddTsumo;
+export default AddBalance;

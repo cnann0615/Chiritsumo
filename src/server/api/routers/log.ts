@@ -5,55 +5,46 @@ import { db } from "~/server/db";
 
 // Procedureの定義//////////////////////////////////////////////
 
-export const wantedItemRouter = createTRPCRouter({
-  // 欲しい物を取得
+export const logRouter = createTRPCRouter({
+  // つもログの取得
   read: protectedProcedure.query(({ ctx }) => {
-    return db.wantedItem.findMany({
+    return db.log.findMany({
       where: { userId: ctx.session.user.id },
       orderBy: { createdAt: "desc" },
     });
   }),
 
-  // 欲しい物を追加
+  // つもログの追加
   create: protectedProcedure
-    .input(z.object({ name: z.string(), price: z.number(), url: z.string() }))
+    .input(z.object({ balance: z.number(), title: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return db.wantedItem.create({
+      return db.log.create({
         data: {
           userId: ctx.session.user.id,
-          name: input.name,
-          price: input.price,
-          url: input.url,
+          balance: input.balance,
+          title: input.title,
         },
       });
     }),
 
-  // 欲しい物の更新
+  // つもログの更新
   update: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        price: z.number(),
-        url: z.string(),
-      }),
-    )
+    .input(z.object({ id: z.string(), balance: z.number(), title: z.string() }))
     .mutation(async ({ input }) => {
-      return db.wantedItem.update({
+      return db.log.update({
         where: { id: input.id },
         data: {
-          name: input.name,
-          price: input.price,
-          url: input.url,
+          balance: input.balance,
+          title: input.title,
         },
       });
     }),
 
-  // 欲しい物の削除
+  // つもログの削除
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
-      return db.wantedItem.delete({
+      return db.log.delete({
         where: { id: input.id },
       });
     }),

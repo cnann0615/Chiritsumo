@@ -4,15 +4,15 @@ import React from "react";
 import { api } from "~/trpc/react";
 import Button from "../components/Button";
 
-const TsumoBalanceProgress = () => {
+const BalanceProgress = () => {
   const utils = api.useUtils();
   const { data: wantedItemList } = api.wantedItem.read.useQuery();
-  const { data: tsumoBalance } = api.tsumoBalance.read.useQuery();
+  const { data: balance } = api.balance.read.useQuery();
 
   // ミューテーションを定義
-  const updateTsumoBalance = api.tsumoBalance.update.useMutation({
+  const updateBalance = api.balance.update.useMutation({
     onSuccess: async () => {
-      await utils.tsumoBalance.read.invalidate();
+      await utils.balance.read.invalidate();
     },
   });
   const deleteWantedItem = api.wantedItem.delete.useMutation({
@@ -23,12 +23,12 @@ const TsumoBalanceProgress = () => {
 
   const handleBuy = async (item: WantedItem) => {
     if (window.confirm("つも残高をこの商品に使いますか？")) {
-      updateTsumoBalance.mutate({ tsumo: -item.price });
+      updateBalance.mutate({ balance: -item.price });
       deleteWantedItem.mutate({ id: item.id });
     }
   };
 
-  if (tsumoBalance) {
+  if (balance) {
     return (
       <div className="flex justify-center p-4 sm:p-6">
         <div className="w-full max-w-2xl">
@@ -60,21 +60,19 @@ const TsumoBalanceProgress = () => {
                     <div className="mt-2 flex items-center gap-2">
                       <progress
                         max="1"
-                        value={tsumoBalance!.tsumoBalance / item.price}
+                        value={balance!.balance / item.price}
                         className="w-full sm:w-2/3"
                       ></progress>
                       <p className="text-sm sm:text-base">
                         {Math.min(
-                          Math.round(
-                            (tsumoBalance!.tsumoBalance / item.price) * 100,
-                          ),
+                          Math.round((balance!.balance / item.price) * 100),
                           100,
                         )}
                         %
                       </p>
                     </div>
                   </div>
-                  {tsumoBalance!.tsumoBalance / item.price >= 1 && (
+                  {balance!.balance / item.price >= 1 && (
                     <Button
                       text={"購入できます！"}
                       size={"large"}
@@ -100,4 +98,4 @@ const TsumoBalanceProgress = () => {
   }
 };
 
-export default TsumoBalanceProgress;
+export default BalanceProgress;

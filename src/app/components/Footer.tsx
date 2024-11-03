@@ -23,7 +23,7 @@ const Footer = async () => {
           </li>
           <li className="flex flex-col items-center">
             <Link
-              href="/tsumoManagement"
+              href="/logManagement"
               className="flex flex-col items-center text-white hover:text-pink-500"
             >
               <AiOutlineUnorderedList size={22} />

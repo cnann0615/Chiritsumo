@@ -1,11 +1,11 @@
 /*
   Warnings:
 
-  - You are about to drop the column `habitualWasteId` on the `TsumoLog` table. All the data in the column will be lost.
+  - You are about to drop the column `habitualWasteId` on the `Log` table. All the data in the column will be lost.
 
 */
 -- DropForeignKey
-ALTER TABLE "TsumoLog" DROP CONSTRAINT "TsumoLog_habitualWasteId_fkey";
+ALTER TABLE "Log" DROP CONSTRAINT "Log_habitualWasteId_fkey";
 
 -- AlterTable
-ALTER TABLE "TsumoLog" DROP COLUMN "habitualWasteId";
+ALTER TABLE "Log" DROP COLUMN "habitualWasteId";

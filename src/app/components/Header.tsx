@@ -11,7 +11,7 @@ const Header = async () => {
   const session = await getServerAuthSession();
 
   return (
-    <header className="fixed left-0 top-0 w-full bg-gray-800 px-[4%] text-white">
+    <header className="fixed left-0 top-0 z-10 w-full bg-gray-800 px-[4%] text-white">
       <nav className="mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           {/* タイトル */}
@@ -37,7 +37,7 @@ const Header = async () => {
               </li>
               <li>
                 <Link
-                  href="/tsumoManagement"
+                  href="/logManagement"
                   className="flex items-center gap-2 hover:text-pink-300"
                 >
                   <AiOutlineUnorderedList size={20} />

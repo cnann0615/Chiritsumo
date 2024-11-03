@@ -31,23 +31,23 @@ DROP TABLE "Schedule";
 DROP TABLE "Task";
 
 -- CreateTable
-CREATE TABLE "TsumoBalance" (
+CREATE TABLE "Balance" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "tsumoBalance" INTEGER NOT NULL,
+    "Balance" INTEGER NOT NULL,
 
-    CONSTRAINT "TsumoBalance_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Balance_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "TsumoLog" (
+CREATE TABLE "Log" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "tsumo" INTEGER NOT NULL,
+    "balance" INTEGER NOT NULL,
     "habitualWasteId" TEXT,
 
-    CONSTRAINT "TsumoLog_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Log_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -55,7 +55,7 @@ CREATE TABLE "HabitualWaste" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "tsumo" INTEGER NOT NULL,
+    "balance" INTEGER NOT NULL,
 
     CONSTRAINT "HabitualWaste_pkey" PRIMARY KEY ("id")
 );
@@ -74,13 +74,13 @@ CREATE TABLE "wantedItem" (
 CREATE UNIQUE INDEX "HabitualWaste_title_key" ON "HabitualWaste"("title");
 
 -- AddForeignKey
-ALTER TABLE "TsumoBalance" ADD CONSTRAINT "TsumoBalance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Balance" ADD CONSTRAINT "Balance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TsumoLog" ADD CONSTRAINT "TsumoLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Log" ADD CONSTRAINT "Log_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TsumoLog" ADD CONSTRAINT "TsumoLog_habitualWasteId_fkey" FOREIGN KEY ("habitualWasteId") REFERENCES "HabitualWaste"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Log" ADD CONSTRAINT "Log_habitualWasteId_fkey" FOREIGN KEY ("habitualWasteId") REFERENCES "HabitualWaste"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "HabitualWaste" ADD CONSTRAINT "HabitualWaste_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

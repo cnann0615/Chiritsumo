@@ -1,5 +1,5 @@
 "use client";
-import { TsumoLog } from "@prisma/client";
+import { Log } from "@prisma/client";
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
 
@@ -15,53 +15,53 @@ const formattedDate = (date: Date): string => {
   });
 };
 
-const TsumoLogList = () => {
-  const { data: tsumoList, isLoading } = api.tsumoLog.read.useQuery();
+const LogList = () => {
+  const { data: logList, isLoading } = api.log.read.useQuery();
   const utils = api.useUtils();
   const [editId, setEditId] = useState<string | null>(null);
   const [preEditData, setPreEditData] = useState<{
     title: string;
-    tsumo: number;
+    balance: number;
   }>({
     title: "",
-    tsumo: 0,
+    balance: 0,
   });
-  const [editData, setEditData] = useState<{ title: string; tsumo: string }>({
+  const [editData, setEditData] = useState<{ title: string; balance: string }>({
     title: "",
-    tsumo: "",
+    balance: "",
   });
 
-  const updateTsumoLog = api.tsumoLog.update.useMutation({
+  const updateLog = api.log.update.useMutation({
     onSuccess: async () => {
-      updateTsumoBalance.mutate({ tsumo: -preEditData.tsumo });
-      updateTsumoBalance.mutate({ tsumo: Number(editData.tsumo) });
-      await utils.tsumoBalance.read.invalidate();
-      await utils.tsumoLog.read.invalidate();
+      updateBalance.mutate({ balance: -preEditData.balance });
+      updateBalance.mutate({ balance: Number(editData.balance) });
+      await utils.balance.read.invalidate();
+      await utils.log.read.invalidate();
       setEditId(null);
     },
   });
 
-  const deleteTsumoLog = api.tsumoLog.delete.useMutation({
-    onSuccess: async (tsumo) => {
-      updateTsumoBalance.mutate({ tsumo: -tsumo.tsumo });
-      await utils.tsumoBalance.read.invalidate();
-      await utils.tsumoLog.read.invalidate();
+  const deleteLog = api.log.delete.useMutation({
+    onSuccess: async (balance) => {
+      updateBalance.mutate({ balance: -balance.balance });
+      await utils.balance.read.invalidate();
+      await utils.log.read.invalidate();
     },
   });
-  const updateTsumoBalance = api.tsumoBalance.update.useMutation();
+  const updateBalance = api.balance.update.useMutation();
 
-  const handleEdit = (tsumo: TsumoLog) => {
-    setEditId(tsumo.id);
-    setPreEditData({ title: tsumo.title, tsumo: Number(tsumo.tsumo) });
-    setEditData({ title: tsumo.title, tsumo: tsumo.tsumo.toString() });
+  const handleEdit = (balance: Log) => {
+    setEditId(balance.id);
+    setPreEditData({ title: balance.title, balance: Number(balance.balance) });
+    setEditData({ title: balance.title, balance: balance.balance.toString() });
   };
 
   const handleSave = async (id: string) => {
-    const tsumoValue = editData.tsumo === "" ? 0 : Number(editData.tsumo);
-    updateTsumoLog.mutate({
+    const balanceValue = editData.balance === "" ? 0 : Number(editData.balance);
+    updateLog.mutate({
       id,
       title: editData.title,
-      tsumo: tsumoValue,
+      balance: balanceValue,
     });
   };
 
@@ -70,7 +70,7 @@ const TsumoLogList = () => {
   };
 
   const handleDelete = async (id: string) => {
-    window.confirm("本当に削除しますか？") && deleteTsumoLog.mutate({ id });
+    window.confirm("本当に削除しますか？") && deleteLog.mutate({ id });
   };
 
   return (
@@ -78,11 +78,11 @@ const TsumoLogList = () => {
       {isLoading ? (
         "ログ取得中..."
       ) : (
-        <div className="mb-20 overflow-x-auto">
+        <div className="overflow-x-auto">
           <h1 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">
             ログ
           </h1>
-          {tsumoList!.length > 0 ? (
+          {logList!.length > 0 ? (
             <table className="w-full border-collapse text-left text-sm sm:text-base">
               <thead>
                 <tr className="bg-black bg-opacity-50">
@@ -95,13 +95,13 @@ const TsumoLogList = () => {
                 </tr>
               </thead>
               <tbody>
-                {tsumoList!.map((tsumo) => (
+                {logList!.map((balance) => (
                   <tr
-                    key={tsumo.id}
+                    key={balance.id}
                     className="border-b border-gray-500 bg-black bg-opacity-30"
                   >
                     <td className="p-3">
-                      {editId === tsumo.id ? (
+                      {editId === balance.id ? (
                         <input
                           type="text"
                           value={editData.title}
@@ -116,19 +116,19 @@ const TsumoLogList = () => {
                         />
                       ) : (
                         <span className="block sm:table-cell">
-                          {tsumo.title}
+                          {balance.title}
                         </span>
                       )}
                     </td>
                     <td className="p-3">
-                      {editId === tsumo.id ? (
+                      {editId === balance.id ? (
                         <input
                           type="number"
-                          value={editData.tsumo}
+                          value={editData.balance}
                           onChange={(e) =>
                             setEditData((prev) => ({
                               ...prev,
-                              tsumo: e.target.value,
+                              balance: e.target.value,
                             }))
                           }
                           className="w-full rounded border bg-black bg-opacity-10 p-1 text-gray-100"
@@ -136,21 +136,21 @@ const TsumoLogList = () => {
                         />
                       ) : (
                         <span className="block sm:table-cell">
-                          {tsumo.tsumo}
+                          {balance.balance}
                         </span>
                       )}
                     </td>
-                    <td className="p-3">{formattedDate(tsumo.createdAt)}</td>
+                    <td className="p-3">{formattedDate(balance.createdAt)}</td>
                     <td className="p-3">
                       <div className="flex flex-wrap gap-2">
-                        {editId === tsumo.id ? (
+                        {editId === balance.id ? (
                           <>
                             <Button
                               text={"Save"}
                               size={"small"}
                               bgColor={"green"}
-                              pending={updateTsumoLog.isPending}
-                              onClick={() => handleSave(tsumo.id)}
+                              pending={updateLog.isPending}
+                              onClick={() => handleSave(balance.id)}
                             />
 
                             <Button
@@ -168,14 +168,14 @@ const TsumoLogList = () => {
                               size={"small"}
                               bgColor={"pink"}
                               pending={false}
-                              onClick={() => handleEdit(tsumo)}
+                              onClick={() => handleEdit(balance)}
                             />
                             <Button
                               text={"Delete"}
                               size={"small"}
                               bgColor={"gray"}
-                              pending={deleteTsumoLog.isPending}
-                              onClick={() => handleDelete(tsumo.id)}
+                              pending={deleteLog.isPending}
+                              onClick={() => handleDelete(balance.id)}
                             />
                           </>
                         )}
@@ -194,4 +194,4 @@ const TsumoLogList = () => {
   );
 };
 
-export default TsumoLogList;
+export default LogList;

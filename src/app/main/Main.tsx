@@ -1,23 +1,23 @@
 import WrapSessionProvider from "../components/WrapSessionProvider";
 import { HydrateClient } from "~/trpc/server";
-import AddTsumo from "./AddTsumo";
-import TsumoBalanceDisplay from "./TsumoBalanceDisplay";
+import AddBalance from "./AddBalance";
+import BalanceDisplay from "./BalanceDisplay";
 import { getServerAuthSession } from "~/server/auth";
-import TsumoBalanceProgress from "./TsumoBalanceProgress";
+import BalanceProgress from "./BalanceProgress";
 import { db } from "~/server/db";
 
 const Main = async () => {
   try {
     const session = await getServerAuthSession();
 
-    const existingRecord = await db.tsumoBalance.findUnique({
+    const existingRecord = await db.balance.findUnique({
       where: { userId: session!.user.id },
     });
     if (!existingRecord) {
-      await db.tsumoBalance.create({
+      await db.balance.create({
         data: {
           userId: session!.user.id,
-          tsumoBalance: 0,
+          balance: 0,
         },
       });
     }
@@ -29,9 +29,9 @@ const Main = async () => {
     <div className="mb-20 mt-[64px] min-h-[calc(100vh-64px)]">
       <HydrateClient>
         <WrapSessionProvider>
-          <TsumoBalanceDisplay />
-          <AddTsumo />
-          <TsumoBalanceProgress />
+          <BalanceDisplay />
+          <AddBalance />
+          <BalanceProgress />
         </WrapSessionProvider>
       </HydrateClient>
     </div>

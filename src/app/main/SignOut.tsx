@@ -5,7 +5,7 @@ import { TbMountain } from "react-icons/tb";
 
 const SignOut = () => {
   return (
-    <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-4 text-center">
+    <div className="flex min-h-[calc(100vh-132px)] flex-col items-center justify-center px-4 text-center">
       <TbMountain size={180} className="md:size-250" data-testid="icon" />
       <h1 className="mb-3 text-4xl font-bold sm:text-5xl md:text-6xl">
         ちり<span className="text-pink-500">つも</span>
