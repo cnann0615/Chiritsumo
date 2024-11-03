@@ -25,7 +25,7 @@ const BalanceDisplay = () => {
         {/* メインの金額表示 */}
         {isLoading ? (
           <div
-            className="flex h-32 w-32 justify-center sm:h-40 sm:w-40"
+            className="flex h-28 w-28 justify-center sm:h-40 sm:w-40"
             aria-label="読み込み中"
           >
             <div className="mt-3 h-20 w-20 animate-spin rounded-full border-4 border-pink-500 border-t-transparent sm:mt-4 sm:h-28 sm:w-28"></div>
