@@ -94,13 +94,13 @@ const LogList = () => {
 
   return (
     <div>
+      <h1 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">ログ</h1>
       {isLoading ? (
-        "ログ取得中..."
+        <div className="w-hull flex justify-center" aria-label="読み込み中">
+          <div className="mt-3 h-20 w-20 animate-spin rounded-full border-4 border-pink-500 border-t-transparent sm:mt-4 sm:h-28 sm:w-28"></div>
+        </div>
       ) : (
         <div className="overflow-x-auto">
-          <h1 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">
-            ログ
-          </h1>
           {logList!.length > 0 ? (
             <table className="w-full border-collapse text-left text-sm sm:text-base">
               <thead>
