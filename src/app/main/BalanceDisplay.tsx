@@ -31,7 +31,7 @@ const BalanceDisplay = () => {
             <div className="mt-3 h-20 w-20 animate-spin rounded-full border-4 border-pink-500 border-t-transparent sm:mt-4 sm:h-28 sm:w-28"></div>
           </div>
         ) : (
-          <div className="flex h-32 w-32 justify-center sm:h-40 sm:w-40">
+          <div className="flex h-28 w-28 justify-center sm:h-40 sm:w-40">
             {balance?.balance}
           </div>
         )}
