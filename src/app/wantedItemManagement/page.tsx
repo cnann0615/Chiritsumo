@@ -6,7 +6,7 @@ import { HydrateClient } from "~/trpc/server";
 
 const Page = async () => {
   return (
-    <div className="mb-20 mt-[64px] min-h-[calc(100vh-64px)] pb-10 pt-4">
+    <div className="mb-20 mt-[64px] min-h-[calc(100vh-64px)] pb-10 pt-8">
       <HydrateClient>
         <WrapSessionProvider>
           <AddWantedItem />
