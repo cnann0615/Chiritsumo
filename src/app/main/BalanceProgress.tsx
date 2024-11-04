@@ -50,47 +50,52 @@ const BalanceProgress = () => {
                 key={item.id}
                 className="mb-4 rounded border border-gray-500 bg-gray-900 p-4 shadow-xl"
               >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-end gap-2 sm:gap-3">
-                      <h3 className="text-lg font-semibold">{item.name}</h3>
-                      <p className="text-sm text-gray-500 sm:text-base">
-                        Price: ¥{item.price}
-                      </p>
+                <div>
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="flex items-end gap-2 sm:gap-3">
+                        <h3 className="text-lg font-semibold">{item.name}</h3>
+                        <p className="text-sm text-gray-500 sm:text-base">
+                          Price: ¥{item.price}
+                        </p>
+                      </div>
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 underline"
+                      >
+                        詳細を見る
+                      </a>
                     </div>
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 underline"
-                    >
-                      詳細を見る
-                    </a>
-                    <div className="mt-2 flex items-center gap-2">
-                      <progress
-                        max="1"
-                        value={balance!.balance / item.price}
-                        className="w-full sm:w-2/3"
-                      ></progress>
-                      <p className="text-sm sm:text-base">
-                        {Math.min(
-                          Math.round((balance!.balance / item.price) * 100),
-                          100,
-                        )}
-                        %
-                      </p>
+                    <div>
+                      {/* 進捗が100％以上の時のみ、購入ボタンを表示 */}
+                      {balance!.balance / item.price >= 1 && (
+                        <Button
+                          text={"購入できます！"}
+                          size={"medium"}
+                          bgColor={"pink"}
+                          onClick={() => handleBuy(item)}
+                          pending={deleteWantedItem.isPending}
+                        />
+                      )}
                     </div>
                   </div>
-                  {/* 進捗が100％以上の時のみ、購入ボタンを表示 */}
-                  {balance!.balance / item.price >= 1 && (
-                    <Button
-                      text={"購入できます！"}
-                      size={"large"}
-                      bgColor={"pink"}
-                      onClick={() => handleBuy(item)}
-                      pending={deleteWantedItem.isPending}
-                    />
-                  )}
+
+                  <div className="mt-2 flex items-center gap-2">
+                    <progress
+                      max="1"
+                      value={balance!.balance / item.price}
+                      className="w-full"
+                    ></progress>
+                    <p className="text-sm sm:text-base">
+                      {Math.min(
+                        Math.round((balance!.balance / item.price) * 100),
+                        100,
+                      )}
+                      %
+                    </p>
+                  </div>
                 </div>
               </article>
             ))
