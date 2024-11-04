@@ -29,7 +29,7 @@ const BalanceProgress = () => {
 
   // イベント
   const handleBuy = async (item: WantedItem) => {
-    if (window.confirm("つも残高をこの商品に使いますか？")) {
+    if (window.confirm("残高をこの商品に使いますか？")) {
       updateBalance.mutate({ balance: -item.price });
       deleteWantedItem.mutate({ id: item.id });
     }
