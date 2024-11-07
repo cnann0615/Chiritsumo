@@ -2,7 +2,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
-import { Log } from "@prisma/client";
+import { Balance, Log } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { api } from "~/trpc/react";
 import confetti from "canvas-confetti";
@@ -34,6 +34,7 @@ const AddBalance = () => {
     onSuccess: async () => {
       try {
         await utils.balance.read.invalidate();
+        // クラッカーアニメーション
         confetti({
           particleCount: 100,
           spread: 70,
