@@ -3,8 +3,8 @@ import { Log } from "@prisma/client";
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
 import Button from "~/app/components/Button";
+import EditModal from "../../components/EditModal";
 
-// 日付フォーマット用関数
 const formattedDate = (date: Date): string => {
   return date
     .toLocaleString("ja-JP", {
@@ -14,25 +14,18 @@ const formattedDate = (date: Date): string => {
       hour: "2-digit",
       minute: "2-digit",
     })
-    .replace(/^20/, ""); // 年の「20」を省略
+    .replace(/^20/, "");
 };
 
-// ログリストコンポーネント
 const LogList = () => {
   const { data: logList, isLoading } = api.log.read.useQuery();
   const utils = api.useUtils();
   const [editId, setEditId] = useState<string | null>(null);
-  const [preEditData, setPreEditData] = useState<{
-    title: string;
-    price: number;
-  }>({
-    title: "",
-    price: 0,
-  });
   const [editData, setEditData] = useState<{ title: string; price: string }>({
     title: "",
     price: "",
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const updateLog = api.log.update.useMutation({
@@ -40,6 +33,7 @@ const LogList = () => {
       await utils.balance.read.invalidate();
       await utils.log.read.invalidate();
       setEditId(null);
+      setIsModalOpen(false);
     },
   });
 
@@ -53,21 +47,24 @@ const LogList = () => {
 
   const handleEdit = (log: Log) => {
     setEditId(log.id);
-    setPreEditData({ title: log.title, price: Number(log.price) });
     setEditData({ title: log.title, price: log.price.toString() });
+    setIsModalOpen(true);
   };
 
-  const handleSave = async (id: string) => {
-    const _price = editData.price === "" ? 0 : Number(editData.price);
-    updateLog.mutate({
-      id,
-      title: editData.title,
-      price: _price,
-    });
+  const handleSave = async () => {
+    if (editId) {
+      const _price = editData.price === "" ? 0 : Number(editData.price);
+      updateLog.mutate({
+        id: editId,
+        title: editData.title,
+        price: _price,
+      });
+    }
   };
 
   const handleCancel = () => {
     setEditId(null);
+    setIsModalOpen(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -112,82 +109,27 @@ const LogList = () => {
                     key={log.id}
                     className="border-b border-gray-500 bg-black bg-opacity-30"
                   >
-                    <td className="p-2 sm:p-3">
-                      {editId === log.id ? (
-                        <input
-                          type="text"
-                          value={editData.title}
-                          onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              title: e.target.value,
-                            }))
-                          }
-                          className="w-full rounded border bg-black bg-opacity-10 p-1 text-gray-100"
-                          placeholder="タイトル"
-                        />
-                      ) : (
-                        <span className="block sm:table-cell">{log.title}</span>
-                      )}
-                    </td>
-                    <td className="p-2 sm:p-3">
-                      {editId === log.id ? (
-                        <input
-                          type="number"
-                          value={editData.price}
-                          onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              price: e.target.value,
-                            }))
-                          }
-                          className="w-full rounded border bg-black bg-opacity-10 p-1 text-gray-100"
-                          placeholder="値段"
-                        />
-                      ) : (
-                        <span className="block sm:table-cell">{log.price}</span>
-                      )}
-                    </td>
+                    <td className="p-2 sm:p-3">{log.title}</td>
+                    <td className="p-2 sm:p-3">{log.price}</td>
                     <td className="p-2 sm:p-3">
                       {formattedDate(log.createdAt)}
                     </td>
                     <td className="p-2 sm:p-3">
                       <div className="flex flex-wrap gap-2">
-                        {editId === log.id ? (
-                          <>
-                            <Button
-                              text={"✅"}
-                              size={"xSmall"}
-                              bgColor={"green"}
-                              pending={updateLog.isPending}
-                              onClick={() => handleSave(log.id)}
-                            />
-                            <Button
-                              text={"⛔️"}
-                              size={"xSmall"}
-                              bgColor={"gray"}
-                              onClick={() => handleCancel()}
-                              pending={false}
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <Button
-                              text={"✏️"}
-                              size={"xSmall"}
-                              bgColor={"pink"}
-                              pending={false}
-                              onClick={() => handleEdit(log)}
-                            />
-                            <Button
-                              text={"🗑️"}
-                              size={"xSmall"}
-                              bgColor={"gray"}
-                              pending={deleteId == log.id}
-                              onClick={() => handleDelete(log.id)}
-                            />
-                          </>
-                        )}
+                        <Button
+                          text={"✏️"}
+                          size={"xSmall"}
+                          bgColor={"pink"}
+                          pending={false}
+                          onClick={() => handleEdit(log)}
+                        />
+                        <Button
+                          text={"🗑️"}
+                          size={"xSmall"}
+                          bgColor={"gray"}
+                          pending={deleteId == log.id}
+                          onClick={() => handleDelete(log.id)}
+                        />
                       </div>
                     </td>
                   </tr>
@@ -199,6 +141,51 @@ const LogList = () => {
           )}
         </div>
       )}
+
+      {/* 編集モーダル */}
+      <EditModal isOpen={isModalOpen} onClose={handleCancel}>
+        <h2 className="mb-4 text-lg font-bold">編集</h2>
+        <div className="mb-4">
+          <label className="block text-gray-400">タイトル</label>
+          <input
+            type="text"
+            value={editData.title}
+            onChange={(e) =>
+              setEditData((prev) => ({ ...prev, title: e.target.value }))
+            }
+            className="w-full rounded border bg-black bg-opacity-10 p-2 text-gray-100"
+            placeholder="タイトル"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-400">値段</label>
+          <input
+            type="number"
+            value={editData.price}
+            onChange={(e) =>
+              setEditData((prev) => ({ ...prev, price: e.target.value }))
+            }
+            className="w-full rounded border bg-black bg-opacity-10 p-2 text-gray-100"
+            placeholder="値段"
+          />
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button
+            text={"Save"}
+            size={"small"}
+            bgColor={"green"}
+            pending={updateLog.isPending}
+            onClick={handleSave}
+          />
+          <Button
+            text={"Cancel"}
+            size={"small"}
+            bgColor={"gray"}
+            onClick={handleCancel}
+            pending={false}
+          />
+        </div>
+      </EditModal>
     </div>
   );
 };
