@@ -85,6 +85,7 @@ const LogList = () => {
   };
 
   const handlePageClick = (pageNumber: number) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setCurrentPage(pageNumber);
   };
 
