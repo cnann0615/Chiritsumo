@@ -69,7 +69,7 @@ const BalanceProgress = () => {
                       {/* 進捗が100％以上の時のみ、購入ボタンを表示 */}
                       {balance!.balance / item.price >= 1 && (
                         <Button
-                          text={"購入できます！"}
+                          text={"購入！"}
                           size={"medium"}
                           bgColor={"pink"}
                           onClick={() => handleBuy(item)}

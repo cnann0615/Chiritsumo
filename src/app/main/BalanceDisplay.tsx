@@ -5,13 +5,7 @@ import { api } from "~/trpc/react";
 // 残高表示コンポーネント
 const BalanceDisplay = () => {
   // 残高を取得
-  const {
-    data: balance,
-    isLoading,
-    isFetching,
-  } = api.balance.read.useQuery(undefined, {
-    staleTime: 5 * 60 * 1000, // 5分 = 300,000ミリ秒
-  });
+  const { data: balance, isLoading, isFetching } = api.balance.read.useQuery();
 
   return (
     <div className="mb-16 mt-32 flex flex-col items-center text-2xl">
