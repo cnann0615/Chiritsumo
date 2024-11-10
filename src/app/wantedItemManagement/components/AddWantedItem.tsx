@@ -11,7 +11,7 @@ import { api } from "~/trpc/react";
 type FormData = {
   name: string;
   price: number;
-  url: string;
+  url: string | null;
 };
 
 // 欲しいものリスト追加コンポーネント
@@ -44,7 +44,7 @@ const AddWantedItem = () => {
       name: data.name,
       price: Number(data.price),
       userId: session!.user.id,
-      url: data.url,
+      url: data.url ? data.url : null,
     };
 
     // フォームをリセット
@@ -118,7 +118,6 @@ const AddWantedItem = () => {
           <input
             type="url"
             {...register("url", {
-              required: "URLは必須です",
               pattern: {
                 value: /^(https?:\/\/[^\s$.?#].[^\s]*)$/i,
                 message: "有効なURLを入力してください",

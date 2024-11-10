@@ -16,7 +16,13 @@ export const wantedItemRouter = createTRPCRouter({
 
   // 欲しい物を追加
   create: protectedProcedure
-    .input(z.object({ name: z.string(), price: z.number(), url: z.string() }))
+    .input(
+      z.object({
+        name: z.string(),
+        price: z.number(),
+        url: z.string().nullable(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       return db.wantedItem.create({
         data: {
@@ -35,7 +41,7 @@ export const wantedItemRouter = createTRPCRouter({
         id: z.string(),
         name: z.string(),
         price: z.number(),
-        url: z.string(),
+        url: z.string().nullable(),
       }),
     )
     .mutation(async ({ input }) => {

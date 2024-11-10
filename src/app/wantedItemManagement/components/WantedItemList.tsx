@@ -45,18 +45,19 @@ const WantedItemList = () => {
     setEditData({
       name: wantedItem.name,
       price: wantedItem.price.toString(),
-      url: wantedItem.url,
+      url: wantedItem.url ? wantedItem.url : "",
     });
   };
 
   const handleSave = async (id: string) => {
     const wantedItemPrice = editData.price === "" ? 0 : Number(editData.price);
+    const wantedItemURL = editData.url === "" ? null : editData.url;
     updateWantedItem.mutate({
       id,
       ...{
         name: editData.name,
         price: wantedItemPrice,
-        url: editData.url,
+        url: wantedItemURL,
       },
     });
   };
@@ -139,14 +140,16 @@ const WantedItemList = () => {
                           Price: ¥{item.price}
                         </p>
                       </div>
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                      >
-                        詳細を見る
-                      </a>
+                      {item.url && (
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 underline"
+                        >
+                          詳細を見る
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>
