@@ -10,7 +10,7 @@ export const wantedItemRouter = createTRPCRouter({
   read: protectedProcedure.query(({ ctx }) => {
     return db.wantedItem.findMany({
       where: { userId: ctx.session.user.id },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
     });
   }),
 
@@ -46,6 +46,34 @@ export const wantedItemRouter = createTRPCRouter({
           price: input.price,
           url: input.url,
         },
+      });
+    }),
+
+  // 欲しい物の削除（購入）
+  buy: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return db.$transaction(async (prisma) => {
+        // 削除対象の欲しい物アイテムを取得
+        const deleteItem = await prisma.wantedItem.findUnique({
+          where: { id: input.id },
+        });
+        if (!deleteItem) {
+          throw new Error("Wanted item not found");
+        }
+
+        // 欲しい物の削除
+        const deletedItem = await prisma.wantedItem.delete({
+          where: { id: input.id },
+        });
+
+        // 残高の更新
+        await prisma.balance.update({
+          where: { userId: ctx.session.user.id },
+          data: { balance: { decrement: deleteItem.price } },
+        });
+
+        return deletedItem;
       });
     }),
 

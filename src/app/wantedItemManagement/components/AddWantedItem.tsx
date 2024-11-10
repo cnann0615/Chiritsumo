@@ -1,8 +1,9 @@
 "use client";
 
 import { WantedItem } from "@prisma/client";
+import { now } from "next-auth/client/_utils";
 import { useSession } from "next-auth/react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "~/app/components/Button";
 import { api } from "~/trpc/react";
@@ -20,11 +21,13 @@ const AddWantedItem = () => {
   // セッション情報取得
   const { data: session } = useSession();
 
+  // エラーメッセージ状態
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   // ミューテーションを定義
   const createWantedItem = api.wantedItem.create.useMutation({
     onSuccess: async () => {
       await utils.wantedItem.read.invalidate();
-      reset();
     },
   });
 
@@ -36,14 +39,38 @@ const AddWantedItem = () => {
     reset,
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     const newWantedItem: Omit<WantedItem, "id" | "createdAt"> = {
       name: data.name,
       price: Number(data.price),
       userId: session!.user.id,
       url: data.url,
     };
-    createWantedItem.mutate(newWantedItem);
+
+    // フォームをリセット
+    reset();
+
+    // 楽観的に残高表示の値を更新（キャッシュの編集）
+    // idとcreatedAtプロパティは、ダミーを登録
+    utils.wantedItem.read.setData(undefined, (oldData) => {
+      if (!oldData)
+        return [{ ...newWantedItem, id: "dummy", createdAt: new Date() }];
+      return [
+        ...oldData,
+        { ...newWantedItem, id: "dummy", createdAt: new Date() },
+      ];
+    });
+
+    // データ保存とエラーハンドリング
+    try {
+      await createWantedItem.mutateAsync(newWantedItem);
+    } catch (error) {
+      console.error("Error create wantedItem:", error);
+      setErrorMessage(
+        "データの保存中に問題が発生しました。もう一度お試しください。",
+      );
+      utils.wantedItem.read.invalidate();
+    }
   };
 
   return (
@@ -51,6 +78,12 @@ const AddWantedItem = () => {
       <h2 className="mb-4 pl-1 text-xl font-bold text-gray-100 sm:text-2xl">
         欲しい物
       </h2>
+      {/* エラーメッセージ */}
+      {errorMessage && (
+        <div className="mb-4 text-center text-sm text-red-500">
+          {errorMessage}
+        </div>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mb-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap"
@@ -99,12 +132,7 @@ const AddWantedItem = () => {
           )}
         </div>
         <div className="sm:w-auto">
-          <Button
-            text="Add"
-            size="large"
-            bgColor="pink"
-            pending={createWantedItem.isPending}
-          />
+          <Button text="Add" size="large" bgColor="pink" pending={false} />
         </div>
       </form>
     </div>

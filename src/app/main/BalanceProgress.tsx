@@ -16,22 +16,17 @@ const BalanceProgress = () => {
   const { data: balance } = api.balance.read.useQuery();
 
   // ミューテーションを定義
-  const updateBalance = api.balance.update.useMutation({
-    onSuccess: async () => {
-      await utils.balance.read.invalidate();
-    },
-  });
-  const deleteWantedItem = api.wantedItem.delete.useMutation({
+  const buyWantedItem = api.wantedItem.buy.useMutation({
     onSuccess: async () => {
       await utils.wantedItem.read.invalidate();
+      await utils.balance.read.invalidate();
     },
   });
 
   // イベント
   const handleBuy = async (item: WantedItem) => {
     if (window.confirm("残高をこの商品に使いますか？")) {
-      updateBalance.mutate({ balance: -item.price });
-      deleteWantedItem.mutate({ id: item.id });
+      buyWantedItem.mutate({ id: item.id });
     }
   };
 
@@ -76,7 +71,7 @@ const BalanceProgress = () => {
                           size={"medium"}
                           bgColor={"pink"}
                           onClick={() => handleBuy(item)}
-                          pending={deleteWantedItem.isPending}
+                          pending={buyWantedItem.isPending}
                         />
                       )}
                     </div>

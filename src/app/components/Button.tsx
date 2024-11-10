@@ -26,15 +26,22 @@ const Button = ({
   };
 
   return (
-    <button
-      className={`flex items-center justify-center rounded-md px-4 py-2 font-bold text-white opacity-90 ${
-        sizeClasses[size]
-      } ${bgColorClasses[bgColor]}`}
-      onClick={onClick}
-      disabled={pending}
-    >
-      {pending ? "処理中.." : text}
-    </button>
+    <div className="relative">
+      {/* pending が true の時にオーバーレイを表示 */}
+      {pending && (
+        <div className="fixed inset-0 z-10 bg-black opacity-50"></div>
+      )}
+
+      <button
+        className={`flex items-center justify-center rounded-md px-4 py-2 font-bold text-white opacity-90 ${
+          sizeClasses[size]
+        } ${bgColorClasses[bgColor]}`}
+        onClick={onClick}
+        disabled={pending}
+      >
+        {pending ? "処理中.." : text}
+      </button>
+    </div>
   );
 };
 

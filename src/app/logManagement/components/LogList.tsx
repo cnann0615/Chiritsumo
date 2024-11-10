@@ -41,13 +41,8 @@ const LogList = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // ミューテーション定義
-  const updateBalance = api.balance.update.useMutation();
-
   const updateLog = api.log.update.useMutation({
     onSuccess: async () => {
-      // 編集前のログの値段を残高から引いて、編集後の値段を足す
-      updateBalance.mutate({ balance: -preEditData.price });
-      updateBalance.mutate({ balance: Number(editData.price) });
       await utils.balance.read.invalidate();
       await utils.log.read.invalidate();
       setEditId(null);
@@ -56,8 +51,6 @@ const LogList = () => {
 
   const deleteLog = api.log.delete.useMutation({
     onSuccess: async (log) => {
-      // 削除対象のログの値段を残高から引く
-      updateBalance.mutate({ balance: -log.price });
       await utils.balance.read.invalidate();
       await utils.log.read.invalidate();
       setDeleteId(null);
