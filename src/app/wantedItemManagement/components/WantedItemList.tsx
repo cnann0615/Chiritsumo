@@ -151,19 +151,19 @@ const WantedItemList = () => {
                   )}
                 </div>
                 <div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 sm:flex-col">
                     {editId === item.id ? (
                       <>
                         <Button
-                          text={"Save"}
-                          size={"medium"}
+                          text={"✅"}
+                          size={"small"}
                           bgColor={"green"}
                           onClick={() => handleSave(item.id)}
                           pending={updateWantedItem.isPending}
                         />
                         <Button
-                          text={"Cancel"}
-                          size={"medium"}
+                          text={"⛔️"}
+                          size={"small"}
                           bgColor={"gray"}
                           onClick={() => handleCancel()}
                           pending={false}
@@ -172,15 +172,15 @@ const WantedItemList = () => {
                     ) : (
                       <>
                         <Button
-                          text={"Edit"}
-                          size={"medium"}
+                          text={"✏️"}
+                          size={"small"}
                           bgColor={"pink"}
                           onClick={() => handleEdit(item)}
                           pending={false}
                         />
                         <Button
-                          text={"Delete"}
-                          size={"medium"}
+                          text={"🗑️"}
+                          size={"small"}
                           bgColor={"gray"}
                           onClick={() => handleDelete(item.id)}
                           pending={deleteId == item.id}

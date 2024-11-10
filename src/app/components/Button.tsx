@@ -8,12 +8,13 @@ const Button = ({
   onClick,
 }: {
   text: string;
-  size?: "small" | "medium" | "large";
+  size?: "xSmall" | "small" | "medium" | "large";
   bgColor: "green" | "gray" | "pink";
   pending: boolean;
   onClick?: () => void;
 }) => {
   const sizeClasses = {
+    xSmall: "h-[30px] min-w-[50px] ",
     small: "h-[30px] min-w-[100px] ",
     medium: "h-[50px] min-w-[100px]",
     large: "h-[50px] w-full",
@@ -21,7 +22,7 @@ const Button = ({
 
   const bgColorClasses = {
     green: "bg-green-500 hover:bg-green-700",
-    gray: "bg-gray-500 hover:bg-gray-700",
+    gray: "bg-gray-300 hover:bg-gray-400",
     pink: "bg-pink-500 hover:bg-pink-700",
   };
 
@@ -39,7 +40,11 @@ const Button = ({
         onClick={onClick}
         disabled={pending}
       >
-        {pending ? "処理中.." : text}
+        {pending ? (
+          <div className="h-4 w-4 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
+        ) : (
+          text
+        )}
       </button>
     </div>
   );

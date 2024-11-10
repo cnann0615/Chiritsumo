@@ -2,29 +2,26 @@
 import { Log } from "@prisma/client";
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
-
 import Button from "~/app/components/Button";
 
 // 日付フォーマット用関数
 const formattedDate = (date: Date): string => {
-  return date.toLocaleString("ja-JP", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return date
+    .toLocaleString("ja-JP", {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+    .replace(/^20/, ""); // 年の「20」を省略
 };
 
 // ログリストコンポーネント
 const LogList = () => {
-  // ログデータ取得
   const { data: logList, isLoading } = api.log.read.useQuery();
-  // キャッシュ更新用
   const utils = api.useUtils();
-  // 編集中ログidの管理
   const [editId, setEditId] = useState<string | null>(null);
-  // 編集するログの編集前の状態を管理
   const [preEditData, setPreEditData] = useState<{
     title: string;
     price: number;
@@ -32,15 +29,12 @@ const LogList = () => {
     title: "",
     price: 0,
   });
-  // 編集中のログの内容を管理
   const [editData, setEditData] = useState<{ title: string; price: string }>({
     title: "",
     price: "",
   });
-  // 削除中のログのidを管理
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  // ミューテーション定義
   const updateLog = api.log.update.useMutation({
     onSuccess: async () => {
       await utils.balance.read.invalidate();
@@ -50,14 +44,13 @@ const LogList = () => {
   });
 
   const deleteLog = api.log.delete.useMutation({
-    onSuccess: async (log) => {
+    onSuccess: async () => {
       await utils.balance.read.invalidate();
       await utils.log.read.invalidate();
       setDeleteId(null);
     },
   });
 
-  // イベント
   const handleEdit = (log: Log) => {
     setEditId(log.id);
     setPreEditData({ title: log.title, price: Number(log.price) });
@@ -65,7 +58,6 @@ const LogList = () => {
   };
 
   const handleSave = async (id: string) => {
-    // string → numberに変換
     const _price = editData.price === "" ? 0 : Number(editData.price);
     updateLog.mutate({
       id,
@@ -86,12 +78,10 @@ const LogList = () => {
   };
 
   return (
-    <div>
-      <h1 className="mb-4 pl-1 text-xl font-bold text-gray-100 sm:text-2xl">
-        ログ
-      </h1>
+    <div className="px-2 sm:px-4">
+      <h1 className="mb-4 text-xl font-bold text-gray-100 sm:text-2xl">ログ</h1>
       {isLoading ? (
-        <div className="w-hull flex justify-center" aria-label="読み込み中">
+        <div className="flex justify-center" aria-label="読み込み中">
           <div className="mt-3 h-20 w-20 animate-spin rounded-full border-4 border-pink-500 border-t-transparent sm:mt-4 sm:h-28 sm:w-28"></div>
         </div>
       ) : (
@@ -100,10 +90,16 @@ const LogList = () => {
             <table className="w-full border-collapse text-left text-sm sm:text-base">
               <thead>
                 <tr className="bg-black bg-opacity-50">
-                  <th className="p-3 font-semibold text-gray-200">タイトル</th>
-                  <th className="p-3 font-semibold text-gray-200">値段</th>
-                  <th className="p-3 font-semibold text-gray-200">日時</th>
-                  <th className="p-3 font-semibold text-gray-200">
+                  <th className="w-1/2 p-2 font-semibold text-gray-200 sm:p-3">
+                    タイトル
+                  </th>
+                  <th className="w-1/6 p-2 font-semibold text-gray-200 sm:p-3">
+                    値段
+                  </th>
+                  <th className="w-1/4 p-2 font-semibold text-gray-200 sm:p-3">
+                    日時
+                  </th>
+                  <th className="p-2 font-semibold text-gray-200 sm:p-3">
                     アクション
                   </th>
                 </tr>
@@ -114,7 +110,7 @@ const LogList = () => {
                     key={log.id}
                     className="border-b border-gray-500 bg-black bg-opacity-30"
                   >
-                    <td className="p-3">
+                    <td className="p-2 sm:p-3">
                       {editId === log.id ? (
                         <input
                           type="text"
@@ -132,7 +128,7 @@ const LogList = () => {
                         <span className="block sm:table-cell">{log.title}</span>
                       )}
                     </td>
-                    <td className="p-3">
+                    <td className="p-2 sm:p-3">
                       {editId === log.id ? (
                         <input
                           type="number"
@@ -150,22 +146,23 @@ const LogList = () => {
                         <span className="block sm:table-cell">{log.price}</span>
                       )}
                     </td>
-                    <td className="p-3">{formattedDate(log.createdAt)}</td>
-                    <td className="p-3">
+                    <td className="p-2 sm:p-3">
+                      {formattedDate(log.createdAt)}
+                    </td>
+                    <td className="p-2 sm:p-3">
                       <div className="flex flex-wrap gap-2">
                         {editId === log.id ? (
                           <>
                             <Button
-                              text={"Save"}
-                              size={"small"}
+                              text={"✅"}
+                              size={"xSmall"}
                               bgColor={"green"}
                               pending={updateLog.isPending}
                               onClick={() => handleSave(log.id)}
                             />
-
                             <Button
-                              text={"Cancel"}
-                              size={"small"}
+                              text={"⛔️"}
+                              size={"xSmall"}
                               bgColor={"gray"}
                               onClick={() => handleCancel()}
                               pending={false}
@@ -174,15 +171,15 @@ const LogList = () => {
                         ) : (
                           <>
                             <Button
-                              text={"Edit"}
-                              size={"small"}
+                              text={"✏️"}
+                              size={"xSmall"}
                               bgColor={"pink"}
                               pending={false}
                               onClick={() => handleEdit(log)}
                             />
                             <Button
-                              text={"Delete"}
-                              size={"small"}
+                              text={"🗑️"}
+                              size={"xSmall"}
                               bgColor={"gray"}
                               pending={deleteId == log.id}
                               onClick={() => handleDelete(log.id)}
