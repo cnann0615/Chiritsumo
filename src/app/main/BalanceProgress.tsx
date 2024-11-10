@@ -54,14 +54,16 @@ const BalanceProgress = () => {
                           Price: ¥{item.price}
                         </p>
                       </div>
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                      >
-                        詳細を見る
-                      </a>
+                      {item.url && (
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 underline"
+                        >
+                          詳細を見る
+                        </a>
+                      )}
                     </div>
                     <div>
                       {/* 進捗が100％以上の時のみ、購入ボタンを表示 */}
