@@ -156,35 +156,37 @@ const LogList = () => {
               <p className="text-center text-gray-500">ログがありません。</p>
             )}
           </div>
-          <div className="mt-4 flex justify-center gap-2">
-            <button
-              className="px-3 py-1 text-gray-500 hover:text-gray-300"
-              onClick={() => handlePageClick(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              ＜ Back
-            </button>
-            {Array.from({ length: totalPages }, (_, index) => (
+          {totalPages > 1 && (
+            <div className="mt-4 flex justify-center gap-2">
               <button
-                key={index + 1}
-                className={`px-3 py-1 ${
-                  currentPage === index + 1
-                    ? "bg-pink-500 text-white"
-                    : "text-gray-500 hover:text-gray-300"
-                }`}
-                onClick={() => handlePageClick(index + 1)}
+                className="px-3 py-1 text-gray-500 hover:text-gray-300"
+                onClick={() => handlePageClick(currentPage - 1)}
+                disabled={currentPage === 1}
               >
-                {index + 1}
+                ＜ Back
               </button>
-            ))}
-            <button
-              className="px-3 py-1 text-gray-500 hover:text-gray-300"
-              onClick={() => handlePageClick(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next ＞
-            </button>
-          </div>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  className={`px-3 py-1 ${
+                    currentPage === index + 1
+                      ? "bg-pink-500 text-white"
+                      : "text-gray-500 hover:text-gray-300"
+                  }`}
+                  onClick={() => handlePageClick(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                className="px-3 py-1 text-gray-500 hover:text-gray-300"
+                onClick={() => handlePageClick(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next ＞
+              </button>
+            </div>
+          )}
         </div>
       )}
 
