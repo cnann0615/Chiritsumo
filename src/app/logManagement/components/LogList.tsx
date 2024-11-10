@@ -18,7 +18,6 @@ const formattedDate = (date: Date): string => {
 };
 
 const LogList = () => {
-  const { data: logList, isLoading } = api.log.read.useQuery();
   const utils = api.useUtils();
   const [editId, setEditId] = useState<string | null>(null);
   const [editData, setEditData] = useState<{ title: string; price: string }>({
@@ -27,6 +26,17 @@ const LogList = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const logsPerPage = 15;
+
+  // フェッチしてページネーション用に切り分け
+  const { data: logList, isLoading } = api.log.read.useQuery();
+  const paginatedLogs = logList
+    ? logList.slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage)
+    : [];
+
+  const totalPages = logList ? Math.ceil(logList.length / logsPerPage) : 1;
 
   const updateLog = api.log.update.useMutation({
     onSuccess: async () => {
@@ -74,6 +84,10 @@ const LogList = () => {
     }
   };
 
+  const handlePageClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div>
       <h1 className="mb-4 pl-1 text-xl font-bold text-gray-100 sm:text-2xl">
@@ -84,61 +98,92 @@ const LogList = () => {
           <div className="mt-3 h-20 w-20 animate-spin rounded-full border-4 border-pink-500 border-t-transparent sm:mt-4 sm:h-28 sm:w-28"></div>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          {logList!.length > 0 ? (
-            <table className="w-full border-collapse text-left text-sm sm:text-base">
-              <thead>
-                <tr className="bg-black bg-opacity-50">
-                  <th className="w-1/2 p-2 font-semibold text-gray-200 sm:p-3">
-                    タイトル
-                  </th>
-                  <th className="w-1/6 p-2 font-semibold text-gray-200 sm:p-3">
-                    値段
-                  </th>
-                  <th className="w-1/4 p-2 font-semibold text-gray-200 sm:p-3">
-                    日時
-                  </th>
-                  <th className="p-2 font-semibold text-gray-200 sm:p-3">
-                    アクション
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {logList!.map((log) => (
-                  <tr
-                    key={log.id}
-                    className="border-b border-gray-500 bg-black bg-opacity-30"
-                  >
-                    <td className="p-2 sm:p-3">{log.title}</td>
-                    <td className="p-2 sm:p-3">{log.price}</td>
-                    <td className="p-2 sm:p-3">
-                      {formattedDate(log.createdAt)}
-                    </td>
-                    <td className="p-2 sm:p-3">
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          text={"✏️"}
-                          size={"xSmall"}
-                          bgColor={"pink"}
-                          pending={false}
-                          onClick={() => handleEdit(log)}
-                        />
-                        <Button
-                          text={"🗑️"}
-                          size={"xSmall"}
-                          bgColor={"gray"}
-                          pending={deleteId == log.id}
-                          onClick={() => handleDelete(log.id)}
-                        />
-                      </div>
-                    </td>
+        <div>
+          <div className="overflow-x-auto">
+            {paginatedLogs.length > 0 ? (
+              <table className="w-full border-collapse text-left text-sm sm:text-base">
+                <thead>
+                  <tr className="bg-black bg-opacity-50">
+                    <th className="w-1/2 p-2 font-semibold text-gray-200 sm:p-3">
+                      タイトル
+                    </th>
+                    <th className="w-1/6 p-2 font-semibold text-gray-200 sm:p-3">
+                      値段
+                    </th>
+                    <th className="w-1/4 p-2 font-semibold text-gray-200 sm:p-3">
+                      日時
+                    </th>
+                    <th className="p-2 font-semibold text-gray-200 sm:p-3">
+                      アクション
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-center text-gray-500">ログがありません。</p>
-          )}
+                </thead>
+                <tbody>
+                  {paginatedLogs.map((log) => (
+                    <tr
+                      key={log.id}
+                      className="border-b border-gray-500 bg-black bg-opacity-30"
+                    >
+                      <td className="p-2 sm:p-3">{log.title}</td>
+                      <td className="p-2 sm:p-3">{log.price}</td>
+                      <td className="p-2 sm:p-3">
+                        {formattedDate(log.createdAt)}
+                      </td>
+                      <td className="p-2 sm:p-3">
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            text={"✏️"}
+                            size={"xSmall"}
+                            bgColor={"pink"}
+                            pending={false}
+                            onClick={() => handleEdit(log)}
+                          />
+                          <Button
+                            text={"🗑️"}
+                            size={"xSmall"}
+                            bgColor={"gray"}
+                            pending={deleteId == log.id}
+                            onClick={() => handleDelete(log.id)}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-center text-gray-500">ログがありません。</p>
+            )}
+          </div>
+          <div className="mt-4 flex justify-center gap-2">
+            <button
+              className="px-3 py-1 text-gray-500 hover:text-gray-300"
+              onClick={() => handlePageClick(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              ＜ Back
+            </button>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                className={`px-3 py-1 ${
+                  currentPage === index + 1
+                    ? "bg-pink-500 text-white"
+                    : "text-gray-500 hover:text-gray-300"
+                }`}
+                onClick={() => handlePageClick(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              className="px-3 py-1 text-gray-500 hover:text-gray-300"
+              onClick={() => handlePageClick(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next ＞
+            </button>
+          </div>
         </div>
       )}
 
