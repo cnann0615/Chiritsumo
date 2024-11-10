@@ -24,11 +24,7 @@ const AddBalance = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // ミューテーション定義
-  const createLog = api.log.create.useMutation({
-    onError: (error) => {
-      throw error; // エラーを再度投げて onSubmit でキャッチ
-    },
-  });
+  const createLog = api.log.create.useMutation();
 
   // フォーム関連
   const {
