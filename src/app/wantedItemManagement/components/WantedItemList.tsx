@@ -110,7 +110,7 @@ const WantedItemList = () => {
         window.alert(
           "データの削除中に問題が発生しました。もう一度お試しください。",
         );
-        utils.log.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+        utils.wantedItem.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
       }
     }
   };

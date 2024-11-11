@@ -27,7 +27,7 @@ const BalanceProgress = () => {
   // イベント
   const handleBuy = async (item: WantedItem) => {
     if (window.confirm("残高をこの商品に使いますか？")) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0 });
 
       // クラッカーアニメーション
       confetti({
