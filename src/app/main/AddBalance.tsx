@@ -72,7 +72,7 @@ const AddBalance = () => {
 
     // データ保存とエラーハンドリング
     try {
-      await createLog.mutateAsync(newLog);
+      createLog.mutate(newLog);
     } catch (error) {
       console.error("Error updating balance or creating log:", error);
       setErrorMessage(

@@ -23,8 +23,6 @@ const WantedItemList = () => {
     price: "",
     url: "",
   });
-  // 削除中のアイテムのIDを管理
-  const [deleteId, setDeleteId] = useState<string | null>(null);
   // モーダルの開閉状態を管理
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -33,13 +31,11 @@ const WantedItemList = () => {
     onSuccess: async () => {
       await utils.wantedItem.read.invalidate();
       setEditId(null);
-      setIsModalOpen(false);
     },
   });
   const deleteWantedItem = api.wantedItem.delete.useMutation({
     onSuccess: async () => {
       await utils.wantedItem.read.invalidate();
-      setDeleteId(null);
     },
   });
 
@@ -59,12 +55,39 @@ const WantedItemList = () => {
       const wantedItemPrice =
         editData.price === "" ? 0 : Number(editData.price);
       const wantedItemURL = editData.url === "" ? null : editData.url;
-      updateWantedItem.mutate({
-        id: editId,
-        name: editData.name,
-        price: wantedItemPrice,
-        url: wantedItemURL,
+
+      // 楽観的更新
+      utils.wantedItem.read.setData(undefined, (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.map((item) =>
+          item.id === editId
+            ? {
+                ...item,
+                name: editData.name,
+                price: wantedItemPrice,
+                url: wantedItemURL,
+              }
+            : item,
+        );
       });
+
+      // 先にモーダルを閉じる
+      setIsModalOpen(false);
+
+      try {
+        updateWantedItem.mutate({
+          id: editId,
+          name: editData.name,
+          price: wantedItemPrice,
+          url: wantedItemURL,
+        });
+      } catch (error) {
+        console.error("Error updating balance or creating log:", error);
+        window.alert(
+          "データの更新中に問題が発生しました。もう一度お試しください。",
+        );
+        utils.wantedItem.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+      }
     }
   };
 
@@ -75,8 +98,20 @@ const WantedItemList = () => {
 
   const handleDelete = async (id: string) => {
     if (window.confirm("削除しますか？")) {
-      setDeleteId(id);
-      deleteWantedItem.mutate({ id });
+      // 楽観的にUIを更新して削除を反映
+      utils.wantedItem.read.setData(undefined, (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.filter((item) => item.id !== id);
+      });
+      try {
+        deleteWantedItem.mutate({ id });
+      } catch (error) {
+        console.error("Error updating balance or creating log:", error);
+        window.alert(
+          "データの削除中に問題が発生しました。もう一度お試しください。",
+        );
+        utils.log.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+      }
     }
   };
 
@@ -133,7 +168,7 @@ const WantedItemList = () => {
                       size={"xSmall"}
                       bgColor={"gray"}
                       onClick={() => handleDelete(item.id)}
-                      pending={deleteId === item.id}
+                      pending={false}
                     />
                   </div>
                 </div>

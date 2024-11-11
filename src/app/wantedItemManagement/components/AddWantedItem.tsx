@@ -63,7 +63,7 @@ const AddWantedItem = () => {
 
     // データ保存とエラーハンドリング
     try {
-      await createWantedItem.mutateAsync(newWantedItem);
+      createWantedItem.mutate(newWantedItem);
     } catch (error) {
       console.error("Error create wantedItem:", error);
       setErrorMessage(

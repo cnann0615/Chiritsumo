@@ -12,7 +12,7 @@ const BalanceDisplay = () => {
       <h3 className="mb-4 text-2xl font-bold sm:mb-6 sm:text-4xl">残高</h3>
       <div className="mb-2 text-[100px] font-bold leading-none sm:mb-4 sm:text-[150px]">
         {/* メインの金額表示 */}
-        {isFetching ? (
+        {isLoading ? (
           <div
             className="flex h-28 w-28 justify-center sm:h-40 sm:w-40"
             aria-label="読み込み中"

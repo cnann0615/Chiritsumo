@@ -3,6 +3,7 @@ import { WantedItem } from "@prisma/client";
 import React from "react";
 import { api } from "~/trpc/react";
 import Button from "../components/Button";
+import confetti from "canvas-confetti";
 
 // 欲しいものリスト進捗コンポーネント
 const BalanceProgress = () => {
@@ -26,7 +27,38 @@ const BalanceProgress = () => {
   // イベント
   const handleBuy = async (item: WantedItem) => {
     if (window.confirm("残高をこの商品に使いますか？")) {
-      buyWantedItem.mutate({ id: item.id });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // クラッカーアニメーション
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#e7ff30", "#ffffff", "#a2a70b", "#000000"],
+      });
+
+      // 楽観的に残高表示の値を更新（キャッシュの編集）
+      utils.balance.read.setData(undefined, (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          balance: oldData.balance - Number(item.price),
+        };
+      });
+      // 楽観的に欲しいものリストからアイテムを削除
+      utils.wantedItem.read.setData(undefined, (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.filter((wantedItem) => wantedItem.id !== item.id);
+      });
+      try {
+        buyWantedItem.mutate({ id: item.id });
+      } catch (error) {
+        console.error("Error updating balance or creating log:", error);
+        window.alert(
+          "データの更新中に問題が発生しました。もう一度お試しください。",
+        );
+        utils.balance.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+      }
     }
   };
 
@@ -73,7 +105,7 @@ const BalanceProgress = () => {
                           size={"medium"}
                           bgColor={"pink"}
                           onClick={() => handleBuy(item)}
-                          pending={buyWantedItem.isPending}
+                          pending={false}
                         />
                       )}
                     </div>

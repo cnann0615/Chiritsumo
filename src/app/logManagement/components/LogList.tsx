@@ -25,7 +25,6 @@ const LogList = () => {
     price: "",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const logsPerPage = 15;
@@ -43,7 +42,6 @@ const LogList = () => {
       await utils.balance.read.invalidate();
       await utils.log.read.invalidate();
       setEditId(null);
-      setIsModalOpen(false);
     },
   });
 
@@ -51,7 +49,6 @@ const LogList = () => {
     onSuccess: async () => {
       await utils.balance.read.invalidate();
       await utils.log.read.invalidate();
-      setDeleteId(null);
     },
   });
 
@@ -64,11 +61,33 @@ const LogList = () => {
   const handleSave = async () => {
     if (editId) {
       const _price = editData.price === "" ? 0 : Number(editData.price);
-      updateLog.mutate({
-        id: editId,
-        title: editData.title,
-        price: _price,
+
+      // 楽観的更新
+      utils.log.read.setData(undefined, (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.map((log) =>
+          log.id === editId
+            ? { ...log, title: editData.title, price: _price }
+            : log,
+        );
       });
+
+      // 先にモーダルを閉じる
+      setIsModalOpen(false);
+
+      try {
+        updateLog.mutate({
+          id: editId,
+          title: editData.title,
+          price: _price,
+        });
+      } catch (error) {
+        console.error("Error updating balance or creating log:", error);
+        window.alert(
+          "データの更新中に問題が発生しました。もう一度お試しください。",
+        );
+        utils.log.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+      }
     }
   };
 
@@ -79,8 +98,21 @@ const LogList = () => {
 
   const handleDelete = async (id: string) => {
     if (window.confirm("本当に削除しますか？")) {
-      setDeleteId(id);
-      deleteLog.mutate({ id });
+      // 楽観的にUIを更新して削除を反映
+      utils.log.read.setData(undefined, (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.filter((log) => log.id !== id);
+      });
+
+      try {
+        deleteLog.mutate({ id });
+      } catch (error) {
+        console.error("Error updating balance or creating log:", error);
+        window.alert(
+          "データの削除中に問題が発生しました。もう一度お試しください。",
+        );
+        utils.log.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+      }
     }
   };
 
@@ -143,7 +175,7 @@ const LogList = () => {
                             text={"🗑️"}
                             size={"xSmall"}
                             bgColor={"gray"}
-                            pending={deleteId == log.id}
+                            pending={false}
                             onClick={() => handleDelete(log.id)}
                           />
                         </div>
@@ -222,7 +254,7 @@ const LogList = () => {
             text={"Save"}
             size={"small"}
             bgColor={"green"}
-            pending={updateLog.isPending}
+            pending={false}
             onClick={handleSave}
           />
           <Button
