@@ -161,14 +161,12 @@ const WantedItemList = () => {
                       size={"xSmall"}
                       bgColor={"pink"}
                       onClick={() => handleEdit(item)}
-                      pending={false}
                     />
                     <Button
                       text={"🗑️"}
                       size={"xSmall"}
                       bgColor={"gray"}
                       onClick={() => handleDelete(item.id)}
-                      pending={false}
                     />
                   </div>
                 </div>
@@ -227,14 +225,12 @@ const WantedItemList = () => {
             size={"small"}
             bgColor={"green"}
             onClick={handleSave}
-            pending={updateWantedItem.isPending}
           />
           <Button
             text={"Cancel"}
             size={"small"}
             bgColor={"gray"}
             onClick={handleCancel}
-            pending={false}
           />
         </div>
       </EditModal>

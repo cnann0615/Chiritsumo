@@ -117,12 +117,7 @@ const AddBalance = () => {
             </div>
           </div>
           <div className="mx-auto w-[50%]">
-            <Button
-              text="我慢できた！！"
-              size="large"
-              bgColor="pink"
-              pending={false}
-            />
+            <Button text="我慢できた！！" size="large" bgColor="pink" />
           </div>
 
           <div className="flex justify-center space-x-2">

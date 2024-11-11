@@ -105,7 +105,6 @@ const BalanceProgress = () => {
                           size={"medium"}
                           bgColor={"pink"}
                           onClick={() => handleBuy(item)}
-                          pending={false}
                         />
                       )}
                     </div>

@@ -131,7 +131,7 @@ const AddWantedItem = () => {
           )}
         </div>
         <div className="sm:w-auto">
-          <Button text="Add" size="large" bgColor="pink" pending={false} />
+          <Button text="Add" size="large" bgColor="pink" />
         </div>
       </form>
     </div>
