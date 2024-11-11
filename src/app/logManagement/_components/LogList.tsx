@@ -2,9 +2,10 @@
 import { Log } from "@prisma/client";
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
-import Button from "~/app/components/Button";
-import EditModal from "../../components/EditModal";
+import Button from "~/app/_components/Button";
+import EditModal from "../../_components/EditModal";
 
+// 日付フォーマット関数
 const formattedDate = (date: Date): string => {
   return date
     .toLocaleString("ja-JP", {
@@ -24,19 +25,20 @@ const LogList = () => {
     title: "",
     price: "",
   });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const logsPerPage = 15;
 
-  // フェッチしてページネーション用に切り分け
+  // ページネーション関連
   const { data: logList, isLoading } = api.log.read.useQuery();
   const paginatedLogs = logList
     ? logList.slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage)
     : [];
-
   const totalPages = logList ? Math.ceil(logList.length / logsPerPage) : 1;
 
+  // ミューテーション定義
   const updateLog = api.log.update.useMutation({
     onSuccess: async () => {
       await utils.balance.read.invalidate();
@@ -52,6 +54,7 @@ const LogList = () => {
     },
   });
 
+  // イベント
   const handleEdit = (log: Log) => {
     setEditId(log.id);
     setEditData({ title: log.title, price: log.price.toString() });
@@ -72,7 +75,7 @@ const LogList = () => {
         );
       });
 
-      // 先にモーダルを閉じる
+      // モーダルクローズ
       setIsModalOpen(false);
 
       try {
@@ -98,12 +101,11 @@ const LogList = () => {
 
   const handleDelete = async (id: string) => {
     if (window.confirm("本当に削除しますか？")) {
-      // 楽観的にUIを更新して削除を反映
+      // 楽観的更新
       utils.log.read.setData(undefined, (oldData) => {
         if (!oldData) return oldData;
         return oldData.filter((log) => log.id !== id);
       });
-
       try {
         deleteLog.mutate({ id });
       } catch (error) {
@@ -123,9 +125,6 @@ const LogList = () => {
 
   return (
     <div>
-      <h1 className="mb-4 pl-1 text-xl font-bold text-gray-100 sm:text-2xl">
-        ログ
-      </h1>
       {isLoading ? (
         <div className="flex justify-center" aria-label="読み込み中">
           <div className="mt-3 h-20 w-20 animate-spin rounded-full border-4 border-pink-500 border-t-transparent sm:mt-4 sm:h-28 sm:w-28"></div>
@@ -168,14 +167,12 @@ const LogList = () => {
                             text={"✏️"}
                             size={"xSmall"}
                             bgColor={"pink"}
-                            pending={false}
                             onClick={() => handleEdit(log)}
                           />
                           <Button
                             text={"🗑️"}
                             size={"xSmall"}
                             bgColor={"gray"}
-                            pending={false}
                             onClick={() => handleDelete(log.id)}
                           />
                         </div>
@@ -254,7 +251,6 @@ const LogList = () => {
             text={"Save"}
             size={"small"}
             bgColor={"green"}
-            pending={false}
             onClick={handleSave}
           />
           <Button
@@ -262,7 +258,6 @@ const LogList = () => {
             size={"small"}
             bgColor={"gray"}
             onClick={handleCancel}
-            pending={false}
           />
         </div>
       </EditModal>

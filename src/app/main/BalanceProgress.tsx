@@ -2,7 +2,7 @@
 import { WantedItem } from "@prisma/client";
 import React from "react";
 import { api } from "~/trpc/react";
-import Button from "../components/Button";
+import Button from "../_components/Button";
 import confetti from "canvas-confetti";
 
 // 欲しいものリスト進捗コンポーネント

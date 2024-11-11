@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import Button from "../components/Button";
+import Button from "../_components/Button";
 import { Log } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { api } from "~/trpc/react";

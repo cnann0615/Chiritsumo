@@ -5,7 +5,7 @@ import { now } from "next-auth/client/_utils";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import Button from "~/app/components/Button";
+import Button from "~/app/_components/Button";
 import { api } from "~/trpc/react";
 
 type FormData = {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import AddWantedItem from "./components/AddWantedItem";
-import WantedItemList from "./components/WantedItemList";
-import WrapSessionProvider from "../components/WrapSessionProvider";
+import AddWantedItem from "./_components/AddWantedItem";
+import WantedItemList from "./_components/WantedItemList";
+import WrapSessionProvider from "../_components/WrapSessionProvider";
 import { HydrateClient } from "~/trpc/server";
 
 const Page = async () => {

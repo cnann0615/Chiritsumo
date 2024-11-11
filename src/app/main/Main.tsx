@@ -1,4 +1,4 @@
-import WrapSessionProvider from "../components/WrapSessionProvider";
+import WrapSessionProvider from "../_components/WrapSessionProvider";
 import { HydrateClient } from "~/trpc/server";
 import AddBalance from "./AddBalance";
 import BalanceDisplay from "./BalanceDisplay";

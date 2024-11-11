@@ -1,9 +1,9 @@
 "use client";
 import { WantedItem } from "@prisma/client";
 import React, { useState } from "react";
-import Button from "~/app/components/Button";
+import Button from "~/app/_components/Button";
 import { api } from "~/trpc/react";
-import EditModal from "~/app/components/EditModal"; // モーダルコンポーネントをインポート
+import EditModal from "~/app/_components/EditModal"; // モーダルコンポーネントをインポート
 
 // 欲しいものリストコンポーネント
 const WantedItemList = () => {
