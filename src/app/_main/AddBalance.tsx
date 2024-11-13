@@ -20,9 +20,6 @@ const AddBalance = () => {
   // セッション情報取得
   const { data: session } = useSession();
 
-  // エラーメッセージ状態
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   // ミューテーション定義
   const createLog = api.log.create.useMutation({
     onSuccess: () => {
@@ -39,9 +36,6 @@ const AddBalance = () => {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    // エラーメッセージをリセット
-    setErrorMessage(null);
-
     // 送信内容から newLog を定義
     const newLog: Omit<Log, "id" | "createdAt"> = {
       title: data.title,
@@ -75,7 +69,7 @@ const AddBalance = () => {
       createLog.mutate(newLog);
     } catch (error) {
       console.error("Error updating balance or creating log:", error);
-      setErrorMessage(
+      window.alert(
         "データの保存中に問題が発生しました。もう一度お試しください。",
       );
       utils.balance.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
@@ -89,13 +83,6 @@ const AddBalance = () => {
           <div className="block">無駄づかいを我慢して</div>
           <div className="block">欲しい物を手に入れよう！</div>
         </h2>
-
-        {/* エラーメッセージ */}
-        {errorMessage && (
-          <div className="mb-4 text-center text-sm text-red-500">
-            {errorMessage}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <div className="md:flex md:items-center md:gap-4">

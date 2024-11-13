@@ -25,11 +25,11 @@ const Row = ({
   onDelete: (id: string) => Promise<void>;
 }) => (
   <tr className="border-b border-gray-500 bg-black bg-opacity-30">
-    <td className="px-3 text-base">{log.title}</td>
-    <td className="px-3 text-base">{log.price}</td>
-    <td className="px-3 text-base">{formattedDate(log.createdAt)}</td>
+    <td className="px-4 text-base">{log.title}</td>
+    <td className="px-4 text-base">{log.price}</td>
+    <td className="px-4 text-base">{formattedDate(log.createdAt)}</td>
     <td className="p-2">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 px-4">
         <Button
           text="✏️"
           size="xSmall"

@@ -1,20 +1,16 @@
 "use client";
 import { WantedItem } from "@prisma/client";
 import React, { useState } from "react";
-import Button from "~/app/_components/Button";
 import { api } from "~/trpc/react";
-import EditModal from "~/app/_components/EditModal"; // モーダルコンポーネントをインポート
 import LoadingRing from "~/app/_components/LoadingRing";
+import Row from "./Row";
+import EditItemModal from "./EditItemModal";
 
 // 欲しいものリストコンポーネント
 const WantedItemList = () => {
-  // キャッシュ更新用
   const utils = api.useUtils();
-  // 欲しいものリスト取得
   const { data: wantedItemList, isLoading } = api.wantedItem.read.useQuery();
-  // 編集中のアイテムのIDを管理
   const [editId, setEditId] = useState<string | null>(null);
-  // 編集の内容を管理
   const [editData, setEditData] = useState<{
     name: string;
     price: string;
@@ -24,7 +20,6 @@ const WantedItemList = () => {
     price: "",
     url: "",
   });
-  // モーダルの開閉状態を管理
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // ミューテーションを定義
@@ -72,7 +67,6 @@ const WantedItemList = () => {
         );
       });
 
-      // 先にモーダルを閉じる
       setIsModalOpen(false);
 
       try {
@@ -87,7 +81,7 @@ const WantedItemList = () => {
         window.alert(
           "データの更新中に問題が発生しました。もう一度お試しください。",
         );
-        utils.wantedItem.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+        utils.wantedItem.read.invalidate();
       }
     }
   };
@@ -99,7 +93,6 @@ const WantedItemList = () => {
 
   const handleDelete = async (id: string) => {
     if (window.confirm("削除しますか？")) {
-      // 楽観的にUIを更新して削除を反映
       utils.wantedItem.read.setData(undefined, (oldData) => {
         if (!oldData) return oldData;
         return oldData.filter((item) => item.id !== id);
@@ -111,7 +104,7 @@ const WantedItemList = () => {
         window.alert(
           "データの削除中に問題が発生しました。もう一度お試しください。",
         );
-        utils.wantedItem.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+        utils.wantedItem.read.invalidate();
       }
     }
   };
@@ -127,49 +120,12 @@ const WantedItemList = () => {
         <div>
           {wantedItemList && wantedItemList.length > 0 ? (
             wantedItemList.map((item) => (
-              <article
+              <Row
                 key={item.id}
-                className="mb-4 flex items-center justify-between gap-4 rounded border border-gray-500 bg-gray-900 p-4 shadow-xl"
-              >
-                <div className="w-full flex-1">
-                  <div>
-                    <div className="flex items-end gap-3">
-                      <h3 className="text-lg font-semibold text-gray-100">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-gray-300 sm:text-base">
-                        Price: ¥{item.price}
-                      </p>
-                    </div>
-                    {item.url && (
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                      >
-                        詳細を見る
-                      </a>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <div className="flex-col space-y-2">
-                    <Button
-                      text={"✏️"}
-                      size={"xSmall"}
-                      bgColor={"pink"}
-                      onClick={() => handleEdit(item)}
-                    />
-                    <Button
-                      text={"🗑️"}
-                      size={"xSmall"}
-                      bgColor={"gray"}
-                      onClick={() => handleDelete(item.id)}
-                    />
-                  </div>
-                </div>
-              </article>
+                item={item}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))
           ) : (
             <div className="text-center text-gray-500">
@@ -178,61 +134,13 @@ const WantedItemList = () => {
           )}
         </div>
       )}
-
-      {/* 編集モーダル */}
-      <EditModal isOpen={isModalOpen} onClose={handleCancel}>
-        <h2 className="mb-4 text-lg font-bold">アイテムを編集</h2>
-        <div className="mb-4">
-          <label className="block text-gray-400">商品名</label>
-          <input
-            type="text"
-            value={editData.name}
-            onChange={(e) =>
-              setEditData((prev) => ({ ...prev, name: e.target.value }))
-            }
-            className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
-            placeholder="商品名"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-400">価格</label>
-          <input
-            type="number"
-            value={editData.price}
-            onChange={(e) =>
-              setEditData((prev) => ({ ...prev, price: e.target.value }))
-            }
-            className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
-            placeholder="価格"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-400">URL</label>
-          <input
-            type="url"
-            value={editData.url}
-            onChange={(e) =>
-              setEditData((prev) => ({ ...prev, url: e.target.value }))
-            }
-            className="w-full rounded border bg-black bg-opacity-10 px-2 py-1 text-gray-100"
-            placeholder="URL"
-          />
-        </div>
-        <div className="flex justify-end gap-2">
-          <Button
-            text={"Save"}
-            size={"small"}
-            bgColor={"green"}
-            onClick={handleSave}
-          />
-          <Button
-            text={"Cancel"}
-            size={"small"}
-            bgColor={"gray"}
-            onClick={handleCancel}
-          />
-        </div>
-      </EditModal>
+      <EditItemModal
+        isOpen={isModalOpen}
+        onClose={handleCancel}
+        editData={editData}
+        setEditData={setEditData}
+        onSave={handleSave}
+      />
     </div>
   );
 };

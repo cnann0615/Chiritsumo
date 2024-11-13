@@ -1,9 +1,7 @@
 "use client";
 
 import { WantedItem } from "@prisma/client";
-import { now } from "next-auth/client/_utils";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "~/app/_components/Button";
 import { api } from "~/trpc/react";
@@ -20,9 +18,6 @@ const AddWantedItem = () => {
   const utils = api.useUtils();
   // セッション情報取得
   const { data: session } = useSession();
-
-  // エラーメッセージ状態
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // ミューテーションを定義
   const createWantedItem = api.wantedItem.create.useMutation({
@@ -66,7 +61,7 @@ const AddWantedItem = () => {
       createWantedItem.mutate(newWantedItem);
     } catch (error) {
       console.error("Error create wantedItem:", error);
-      setErrorMessage(
+      window.alert(
         "データの保存中に問題が発生しました。もう一度お試しください。",
       );
       utils.wantedItem.read.invalidate();
@@ -78,12 +73,6 @@ const AddWantedItem = () => {
       <h2 className="mb-4 pl-1 text-xl font-bold text-gray-100 sm:text-2xl">
         欲しい物
       </h2>
-      {/* エラーメッセージ */}
-      {errorMessage && (
-        <div className="mb-4 text-center text-sm text-red-500">
-          {errorMessage}
-        </div>
-      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mb-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap"

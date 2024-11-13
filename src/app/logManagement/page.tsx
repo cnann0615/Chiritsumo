@@ -1,10 +1,9 @@
 import React from "react";
 import { getServerAuthSession } from "~/server/auth";
-import SignOut from "../main/SignOut";
+import SignOut from "../_main/SignOut";
 import LogList from "./_components/LogList";
 import WrapSessionProvider from "../_components/WrapSessionProvider";
 import { HydrateClient } from "~/trpc/server";
-import Title from "./_components/Title";
 
 const page = async () => {
   // セッション情報取得
@@ -16,7 +15,9 @@ const page = async () => {
           <HydrateClient>
             <WrapSessionProvider>
               <div>
-                <Title />
+                <h1 className="mb-4 pl-1 text-xl font-bold text-gray-100 sm:text-2xl">
+                  ログ
+                </h1>
                 <LogList />
               </div>
             </WrapSessionProvider>
