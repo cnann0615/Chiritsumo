@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Button from "~/app/_components/Button";
 import { api } from "~/trpc/react";
 import EditModal from "~/app/_components/EditModal"; // モーダルコンポーネントをインポート
+import LoadingRing from "~/app/_components/LoadingRing";
 
 // 欲しいものリストコンポーネント
 const WantedItemList = () => {
@@ -121,9 +122,7 @@ const WantedItemList = () => {
         欲しい物リスト
       </h2>
       {isLoading ? (
-        <div className="flex justify-center" aria-label="読み込み中">
-          <div className="mt-3 h-20 w-20 animate-spin rounded-full border-4 border-pink-500 border-t-transparent sm:mt-4 sm:h-28 sm:w-28"></div>
-        </div>
+        <LoadingRing />
       ) : (
         <div>
           {wantedItemList && wantedItemList.length > 0 ? (

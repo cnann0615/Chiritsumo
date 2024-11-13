@@ -1,37 +1,20 @@
 "use client";
-import { Log } from "@prisma/client";
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
-import Button from "~/app/_components/Button";
-import EditModal from "../../_components/EditModal";
-
-// 日付フォーマット関数
-const formattedDate = (date: Date): string => {
-  return date
-    .toLocaleString("ja-JP", {
-      year: "2-digit",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-    .replace(/^20/, "");
-};
+import EditLogModal from "./EditLogModal";
+import Table from "./Table";
+import Pagination from "./Pagination";
+import { Log } from "@prisma/client";
+import LoadingRing from "~/app/_components/LoadingRing";
 
 const LogList = () => {
   const utils = api.useUtils();
   const [editId, setEditId] = useState<string | null>(null);
-  const [editData, setEditData] = useState<{ title: string; price: string }>({
-    title: "",
-    price: "",
-  });
-
+  const [editData, setEditData] = useState({ title: "", price: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const logsPerPage = 15;
-
-  // ページネーション関連
   const { data: logList, isLoading } = api.log.read.useQuery();
   const paginatedLogs = logList
     ? logList.slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage)
@@ -54,7 +37,7 @@ const LogList = () => {
     },
   });
 
-  // イベント
+  // ハンドラ
   const handleEdit = (log: Log) => {
     setEditId(log.id);
     setEditData({ title: log.title, price: log.price.toString() });
@@ -75,7 +58,6 @@ const LogList = () => {
         );
       });
 
-      // モーダルクローズ
       setIsModalOpen(false);
 
       try {
@@ -118,149 +100,31 @@ const LogList = () => {
     }
   };
 
-  const handlePageClick = (pageNumber: number) => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setCurrentPage(pageNumber);
-  };
-
   return (
     <div>
       {isLoading ? (
-        <div className="flex justify-center" aria-label="読み込み中">
-          <div className="mt-3 h-20 w-20 animate-spin rounded-full border-4 border-pink-500 border-t-transparent sm:mt-4 sm:h-28 sm:w-28"></div>
-        </div>
+        <LoadingRing />
       ) : (
-        <div>
-          <div className="overflow-x-auto">
-            {paginatedLogs.length > 0 ? (
-              <table className="w-full border-collapse text-left text-sm sm:text-base">
-                <thead>
-                  <tr className="bg-black bg-opacity-50">
-                    <th className="w-1/2 p-2 font-semibold text-gray-200 sm:p-3">
-                      タイトル
-                    </th>
-                    <th className="w-1/6 p-2 font-semibold text-gray-200 sm:p-3">
-                      値段
-                    </th>
-                    <th className="w-1/4 p-2 font-semibold text-gray-200 sm:p-3">
-                      日時
-                    </th>
-                    <th className="p-2 font-semibold text-gray-200 sm:p-3">
-                      アクション
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedLogs.map((log) => (
-                    <tr
-                      key={log.id}
-                      className="border-b border-gray-500 bg-black bg-opacity-30"
-                    >
-                      <td className="p-2 sm:p-3">{log.title}</td>
-                      <td className="p-2 sm:p-3">{log.price}</td>
-                      <td className="p-2 sm:p-3">
-                        {formattedDate(log.createdAt)}
-                      </td>
-                      <td className="p-2 sm:p-3">
-                        <div className="flex flex-wrap gap-2">
-                          <Button
-                            text={"✏️"}
-                            size={"xSmall"}
-                            bgColor={"pink"}
-                            onClick={() => handleEdit(log)}
-                          />
-                          <Button
-                            text={"🗑️"}
-                            size={"xSmall"}
-                            bgColor={"gray"}
-                            onClick={() => handleDelete(log.id)}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="text-center text-gray-500">ログがありません。</p>
-            )}
-          </div>
-          {totalPages > 1 && (
-            <div className="mt-4 flex justify-center gap-2">
-              <button
-                className="px-3 py-1 text-gray-500 hover:text-gray-300"
-                onClick={() => handlePageClick(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                ＜ Back
-              </button>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`px-3 py-1 ${
-                    currentPage === index + 1
-                      ? "bg-pink-500 text-white"
-                      : "text-gray-500 hover:text-gray-300"
-                  }`}
-                  onClick={() => handlePageClick(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-              <button
-                className="px-3 py-1 text-gray-500 hover:text-gray-300"
-                onClick={() => handlePageClick(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                Next ＞
-              </button>
-            </div>
-          )}
-        </div>
+        <>
+          <Table
+            logs={paginatedLogs}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageClick={setCurrentPage}
+          />
+        </>
       )}
-
-      {/* 編集モーダル */}
-      <EditModal isOpen={isModalOpen} onClose={handleCancel}>
-        <h2 className="mb-4 text-lg font-bold">編集</h2>
-        <div className="mb-4">
-          <label className="block text-gray-400">タイトル</label>
-          <input
-            type="text"
-            value={editData.title}
-            onChange={(e) =>
-              setEditData((prev) => ({ ...prev, title: e.target.value }))
-            }
-            className="w-full rounded border bg-black bg-opacity-10 p-2 text-gray-100"
-            placeholder="タイトル"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-400">値段</label>
-          <input
-            type="number"
-            value={editData.price}
-            onChange={(e) =>
-              setEditData((prev) => ({ ...prev, price: e.target.value }))
-            }
-            className="w-full rounded border bg-black bg-opacity-10 p-2 text-gray-100"
-            placeholder="値段"
-          />
-        </div>
-        <div className="flex justify-end gap-2">
-          <Button
-            text={"Save"}
-            size={"small"}
-            bgColor={"green"}
-            onClick={handleSave}
-          />
-          <Button
-            text={"Cancel"}
-            size={"small"}
-            bgColor={"gray"}
-            onClick={handleCancel}
-          />
-        </div>
-      </EditModal>
+      <EditLogModal
+        isOpen={isModalOpen}
+        editData={editData}
+        onClose={handleCancel}
+        onSave={handleSave}
+        setEditData={setEditData}
+      />
     </div>
   );
 };
