@@ -18,7 +18,9 @@ const BalanceProgress = () => {
           <span className="border-b-2 border-pink-500">欲しい物リスト進捗</span>
         </h2>
         {wantedItemList && wantedItemList.length > 0 ? (
-          wantedItemList.map((item) => <BalanceProgressItem item={item} />)
+          wantedItemList.map((item) => (
+            <BalanceProgressItem key={item.id} item={item} />
+          ))
         ) : (
           <div className="text-center text-gray-500">
             <p className="inline-block">欲しい物リストが空です。</p>
