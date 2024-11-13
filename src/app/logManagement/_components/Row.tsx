@@ -1,3 +1,4 @@
+// Row.tsx
 import React from "react";
 import Button from "~/app/_components/Button";
 import { Log } from "@prisma/client";
@@ -25,11 +26,13 @@ const Row = ({
   onDelete: (id: string) => Promise<void>;
 }) => (
   <tr className="border-b border-gray-500 bg-black bg-opacity-30">
-    <td className="px-4 text-base">{log.title}</td>
-    <td className="px-4 text-base">{log.price}</td>
-    <td className="px-4 text-base">{formattedDate(log.createdAt)}</td>
+    <td className="max-w-xs break-words p-2 text-base sm:max-w-full">
+      {log.title}
+    </td>
+    <td className="p-2 text-base">{log.price}</td>
+    <td className="p-2 text-base">{formattedDate(log.createdAt)}</td>
     <td className="p-2">
-      <div className="flex flex-col gap-1 px-4">
+      <div className="flex flex-col gap-1">
         <Button
           text="✏️"
           size="xSmall"

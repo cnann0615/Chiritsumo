@@ -1,3 +1,4 @@
+// Table.tsx
 import React from "react";
 import { Log } from "@prisma/client";
 import Row from "./Row";
@@ -16,10 +17,15 @@ const Table = ({
       <table className="w-full border-collapse text-left text-sm">
         <thead>
           <tr className="bg-black bg-opacity-50">
-            <th className="w-1/2 p-4 font-semibold text-gray-200">タイトル</th>
-            <th className="w-1/6 p-4 font-semibold text-gray-200">値段</th>
-            <th className="w-1/4 p-4 font-semibold text-gray-200">日時</th>
-            <th className="p-4 font-semibold text-gray-200">アクション</th>
+            {/* タイトル行の幅を広く */}
+            <th className="w-3/5 p-2 font-semibold text-gray-200 sm:w-1/2">
+              タイトル
+            </th>
+            <th className="w-1/6 p-2 font-semibold text-gray-200">値段</th>
+            <th className="w-1/5 p-2 font-semibold text-gray-200">日時</th>
+            <th className="w-1/6 p-2 font-semibold text-gray-200">
+              アクション
+            </th>
           </tr>
         </thead>
         <tbody>
