@@ -1,6 +1,7 @@
 import { Balance, WantedItem } from "@prisma/client";
 import React from "react";
 
+// 進捗バー（欲しいものの額に対する残高の割合をProgressBarで示す）
 const ProgressBar = ({
   item,
   balance,

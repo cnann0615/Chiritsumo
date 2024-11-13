@@ -8,8 +8,13 @@ import EditItemModal from "./EditItemModal";
 
 // 欲しいものリストコンポーネント
 const WantedItemList = () => {
+  // キャッシュ更新用
   const utils = api.useUtils();
+
+  // 欲しいものリスト取得
   const { data: wantedItemList, isLoading } = api.wantedItem.read.useQuery();
+
+  // 欲しいものリスト編集用
   const [editId, setEditId] = useState<string | null>(null);
   const [editData, setEditData] = useState<{
     name: string;
@@ -20,6 +25,8 @@ const WantedItemList = () => {
     price: "",
     url: "",
   });
+
+  // モーダル開閉管理用
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // ミューテーションを定義
@@ -35,7 +42,9 @@ const WantedItemList = () => {
     },
   });
 
-  // イベント
+  // ハンドラ
+
+  // 欲しいものリスト編集開始
   const handleEdit = (wantedItem: WantedItem) => {
     setEditId(wantedItem.id);
     setEditData({
@@ -46,6 +55,7 @@ const WantedItemList = () => {
     setIsModalOpen(true);
   };
 
+  // 編集内容保存
   const handleSave = async () => {
     if (editId) {
       const wantedItemPrice =
@@ -86,11 +96,13 @@ const WantedItemList = () => {
     }
   };
 
+  // 編集キャンセル
   const handleCancel = () => {
     setEditId(null);
     setIsModalOpen(false);
   };
 
+  // 欲しいものリスト削除
   const handleDelete = async (id: string) => {
     if (window.confirm("削除しますか？")) {
       utils.wantedItem.read.setData(undefined, (oldData) => {

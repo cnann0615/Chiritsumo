@@ -8,12 +8,18 @@ import { Log } from "@prisma/client";
 import LoadingRing from "~/app/_components/LoadingRing";
 
 const LogList = () => {
+  // キャッシュ更新用
   const utils = api.useUtils();
+
+  // ログ編集用
   const [editId, setEditId] = useState<string | null>(null);
   const [editData, setEditData] = useState({ title: "", price: "" });
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
 
+  // モーダルの開閉管理用
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // ページネーション関連
+  const [currentPage, setCurrentPage] = useState(1);
   const logsPerPage = 15;
   const { data: logList, isLoading } = api.log.read.useQuery();
   const paginatedLogs = logList
@@ -38,12 +44,15 @@ const LogList = () => {
   });
 
   // ハンドラ
+
+  // ログ編集開始
   const handleEdit = (log: Log) => {
     setEditId(log.id);
     setEditData({ title: log.title, price: log.price.toString() });
     setIsModalOpen(true);
   };
 
+  // 編集内容保存
   const handleSave = async () => {
     if (editId) {
       const _price = editData.price === "" ? 0 : Number(editData.price);
@@ -71,16 +80,18 @@ const LogList = () => {
         window.alert(
           "データの更新中に問題が発生しました。もう一度お試しください。",
         );
-        utils.log.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+        utils.log.read.invalidate(); // エラーが出た場合、キャッシュを無効化（再取得）してリセット
       }
     }
   };
 
+  // 編集キャンセル
   const handleCancel = () => {
     setEditId(null);
     setIsModalOpen(false);
   };
 
+  // ログ削除
   const handleDelete = async (id: string) => {
     if (window.confirm("本当に削除しますか？")) {
       // 楽観的更新
@@ -95,7 +106,7 @@ const LogList = () => {
         window.alert(
           "データの削除中に問題が発生しました。もう一度お試しください。",
         );
-        utils.log.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+        utils.log.read.invalidate(); // エラーが出た場合、キャッシュを無効化（再取得）してリセット
       }
     }
   };

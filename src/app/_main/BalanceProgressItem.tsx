@@ -33,7 +33,7 @@ const BalanceProgressItem = ({ item }: { item: WantedItem }) => {
         colors: ["#e7ff30", "#ffffff", "#a2a70b", "#000000"],
       });
 
-      // 楽観的に残高表示の値を更新（キャッシュの編集）
+      // 楽観的に残高表示の値を更新（キャッシュの手動更新）
       utils.balance.read.setData(undefined, (oldData) => {
         if (!oldData) return oldData;
         return {
@@ -53,7 +53,8 @@ const BalanceProgressItem = ({ item }: { item: WantedItem }) => {
         window.alert(
           "データの更新中に問題が発生しました。もう一度お試しください。",
         );
-        utils.balance.read.invalidate(); // エラーが出た場合、キャッシュを無効化してリセット
+        utils.balance.read.invalidate(); // エラーが出た場合、キャッシュを無効化（再取得）してリセット
+        utils.wantedItem.read.invalidate(); // エラーが出た場合、キャッシュを無効化（再取得）してリセット
       }
     }
   };

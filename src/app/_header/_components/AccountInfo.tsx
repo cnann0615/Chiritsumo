@@ -7,6 +7,7 @@ const AccountInfo = ({ session }: { session: Session }) => {
   return (
     <div className="flex items-center gap-4">
       {session.user.image ? (
+        // Googleアカウントの画像を表示
         <Image
           src={session.user.image}
           alt="User Image"

@@ -55,7 +55,7 @@ const AddBalance = () => {
       origin: { y: 0.6 },
     });
 
-    // 楽観的に残高表示の値を更新（キャッシュの編集）
+    // 楽観的に残高表示の値を更新（キャッシュの手動更新）
     utils.balance.read.setData(undefined, (oldData) => {
       if (!oldData) return oldData;
       return {

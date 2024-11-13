@@ -2,6 +2,7 @@ import React from "react";
 import Button from "~/app/_components/Button";
 import { WantedItem } from "@prisma/client";
 
+// 欲しいものリストの各アイテム
 const Row = ({
   item,
   onEdit,
